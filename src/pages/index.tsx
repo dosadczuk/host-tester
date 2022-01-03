@@ -1,14 +1,51 @@
+import axios from 'axios'
 import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { FormEventHandler, useCallback, useEffect, useState } from 'react'
 
 const Home: NextPage = () => {
   const [host, setHost] = useState<string>('')
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isHostReachable, setIsHostReachable] = useState(false)
+  const [response, setResponse] = useState({})
+
+  const handleSubmit = useCallback<FormEventHandler>(
+    async (event) => {
+      event.preventDefault()
+
+      if (host.length === 0) {
+        return console.error('Wartość jest wymagana')
+      }
+
+      setIsSubmitted(true)
+
+      const { status } = await axios.post('/api/check', { host })
+      if (status === 200) {
+        setIsHostReachable(true)
+      } else {
+        setIsHostReachable(false)
+      }
+    },
+    [host],
+  )
+
+  const pingHost = useCallback(
+    async () => {
+      const { data } = await axios.post('/api/ping', { host })
+
+      setResponse(data)
+    },
+    [host],
+  )
 
   useEffect(
     () => {
-      console.log({ host })
+      if (!isHostReachable) {
+        return
+      }
+
+      pingHost()
     },
-    [host],
+    [isHostReachable, pingHost],
   )
 
   return (
@@ -23,8 +60,8 @@ const Home: NextPage = () => {
           </div>
         </h1>
 
-        <form className="flex gap-1 py-4">
-          <input type="url" onChange={({ target: { value } }) => { setHost(value) }}
+        <form className="flex gap-1 py-4" onSubmit={handleSubmit}>
+          <input type="text" onChange={({ target: { value } }) => { setHost(value) }}
                  className="w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 placeholder:text-gray-400"
                  placeholder="np. wp.pl lub 192.168.0.1"
           />
@@ -35,6 +72,49 @@ const Home: NextPage = () => {
           </button>
         </form>
       </header>
+
+      <main>
+        <section>
+          {isSubmitted && (
+            <article className="py-2 px-4 shadow rounded">
+              <header>
+                <div className="flex flex-row justify-between items-center">
+                  <div className="flex flex-col py-2">
+                  <span className="text-sm text-gray-400 font-medium leading-tight">
+                    Nazwa hosta
+                  </span>
+                    <span className="text-2xl text-black font-bold leading-tight">
+                    {host}
+                  </span>
+                  </div>
+
+                  {
+                    isHostReachable
+                      ? (
+                        <div className="flex justify-start items-center">
+                        <span className="px-4 py-1 bg-green-100 text-sm text-green-700 font-medium rounded-md">
+                          Dostępny
+                        </span>
+                        </div>
+                      )
+                      : (
+                        <div className="flex justify-start items-center">
+                        <span className="px-4 py-1 bg-red-100 text-sm text-red-700 font-medium rounded-md">
+                          Niedostępny
+                        </span>
+                        </div>
+                      )
+                  }
+                </div>
+              </header>
+
+              <div>
+                {response && JSON.stringify(response, null, 4)}
+              </div>
+            </article>
+          )}
+        </section>
+      </main>
     </div>
   )
 }
