@@ -20,11 +20,11 @@ const HostChartLine: FC<HostChartLineProps> = ({ title, values }) => {
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="2 2"/>
 
-          <YAxis unit="ms"/>
+          <YAxis unit="ms" width={42}/>
 
-          <XAxis dataKey="name">
-            <Label position="insideBottomRight" className="text-md text-gray-400 font-medium">
-              żądanie
+          <XAxis dataKey="name" height={42}>
+            <Label position="insideBottom" className="text-md text-gray-400 font-medium">
+              numer żądania
             </Label>
           </XAxis>
 

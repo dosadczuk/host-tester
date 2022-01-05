@@ -22,9 +22,9 @@ const HostChartBar: FC<HostChartBarProps> = ({ title, values }) => {
 
           <YAxis unit="ms" width={42}/>
 
-          <XAxis dataKey="name">
-            <Label position="insideBottomRight" className="text-md text-gray-400 font-medium">
-              żądanie
+          <XAxis dataKey="name" height={42}>
+            <Label position="insideBottom" className="text-md text-gray-400 font-medium">
+              numer żądania
             </Label>
           </XAxis>
 
