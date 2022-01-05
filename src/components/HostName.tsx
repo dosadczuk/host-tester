@@ -8,7 +8,7 @@ type HostNameProps = {
 const HostName: FC<HostNameProps> = ({ name, ip }) => {
   return (
     <>
-      <span className="text-2xl font-black uppercase">
+      <span className="text-2xl font-bold uppercase">
         {name}
       </span>
 

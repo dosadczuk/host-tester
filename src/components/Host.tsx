@@ -54,11 +54,11 @@ const Host: FC<HostProps> = ({ host }) => {
         startRequesting()
       }
     },
-    [interval, isReachable, startRequesting, stopRequesting],
+    [interval], // tylko interval
   )
 
   return (
-    <section className="p-4 px-6 bg-white text-gray-800 rounded-xl shadow">
+    <section className="p-4 px-6 bg-white text-gray-800 border border-gray-200 rounded-xl">
       <header className="flex justify-between items-center py-4">
         <h2 className="flex items-center gap-2">
           <HostStatus isChecking={isChecking} isReachable={isReachable}/>
@@ -93,10 +93,10 @@ const Host: FC<HostProps> = ({ host }) => {
         isReachable && (
           <article>
             <Tab.Group as="div" className="pb-4 py-4">
-              <Tab.List as="div" className="pb-4 flex justify-between items-center gap-1">
+              <Tab.List as="div" className="pb-2 flex justify-between items-center gap-1">
                 <div className="flex items-center gap-2">
                   <Button onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
-                    {isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
+                    {isRequesting ? 'Zatrzymaj pomiar' : 'Rozpocznij pomiar'}
                   </Button>
                   <Button onClick={resetResponses}>
                     Resetuj wyniki
@@ -118,10 +118,10 @@ const Host: FC<HostProps> = ({ host }) => {
               </Tab.List>
               <Tab.Panels>
                 <Tab.Panel>
-                  <HostChartBar values={averageTimes}/>
+                  <HostChartBar title="Średni czas odpowiedzi" values={averageTimes}/>
                 </Tab.Panel>
                 <Tab.Panel>
-                  <HostChartLine values={averageTimes}/>
+                  <HostChartLine title="Średni czas odpowiedzi" values={averageTimes}/>
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
