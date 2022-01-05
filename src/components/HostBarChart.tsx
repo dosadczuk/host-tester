@@ -16,11 +16,7 @@ const HostBarChart: FC<HostBarChartProps> = ({ values }) => {
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="2 2"/>
 
-        <YAxis>
-          <Label position="insideTopLeft" className="text-md text-gray-400 font-medium">
-            ms
-          </Label>
-        </YAxis>
+        <YAxis unit="ms"/>
 
         <XAxis dataKey="name">
           <Label position="insideBottomRight" className="text-md text-gray-400 font-medium">
@@ -30,7 +26,7 @@ const HostBarChart: FC<HostBarChartProps> = ({ values }) => {
 
         <Tooltip/>
 
-        <Bar dataKey="value" fill="#3b82f6"/>
+        <Bar dataKey="value" name="Wartość" fill="#3b82f6"/>
       </BarChart>
     </ResponsiveContainer>
   )

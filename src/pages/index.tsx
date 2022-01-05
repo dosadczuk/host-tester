@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import { useMemo, useState } from 'react'
 
 const Home: NextPage = () => {
-  const [hosts] = useState(['wp.pl'])
+  const [hosts] = useState(['google.pl'])
   const hasHosts = useMemo(() => hosts.length > 0, [hosts])
 
   return (

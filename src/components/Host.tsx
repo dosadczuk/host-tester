@@ -2,7 +2,6 @@ import Milliseconds from '@/components/common/Milliseconds'
 import HostBarChart from '@/components/HostBarChart'
 import useHost from '@/hooks/useHost'
 import usePing from '@/hooks/usePing'
-import usePingResponses from '@/hooks/usePingResponses'
 import { faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FC, useEffect, useState } from 'react'
@@ -15,22 +14,18 @@ const Host: FC<HostProps> = ({ host }) => {
   const [interval, setInterval] = useState<number>(3600)
 
   const { ip, isChecking, isReachable } = useHost(host)
-  const { isRequesting, startRequesting, stopRequesting, responses } = usePing(host, interval)
   const {
-    minimumTimes,
-    averageTimes,
-    maximumTimes,
-
-    minimum,
-    average,
-    maximum,
-  } = usePingResponses(responses)
+    isRequesting, startRequesting, stopRequesting,
+    minimumTimes, minimum,
+    averageTimes, average,
+    maximumTimes, maximum,
+  } = usePing(host, interval)
 
   useEffect(
     () => {
-      if (isReachable) {
-        startRequesting()
-      }
+      // if (isReachable) {
+      //   startRequesting()
+      // }
     },
     [isReachable, startRequesting],
   )
