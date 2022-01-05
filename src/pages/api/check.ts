@@ -13,9 +13,9 @@ export default async function handle(
     res.status(400).send('Brak informacji o hoście')
   }
 
-  const { alive } = await ping.promise.probe(host)
-  if (alive) {
-    res.status(200).send('OK')
+  const data = await ping.promise.probe(host)
+  if (data.alive) {
+    res.status(200).json(data)
   } else {
     res.status(400).send('Nieosiągalny')
   }

@@ -5,14 +5,21 @@ import { PingResponse } from 'ping'
 import { useCallback, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
+export type Response = {
+  value: PingResponse | 'error';
+  sentAt: Date;
+};
+
+export type ResponseWithSuccess = Omit<Response, 'value'> & { value: PingResponse }
+export type ResponseWithError = Omit<Response, 'value'> & { value: 'error' }
+
 const usePing = (host: string, interval: number) => {
   // ---------------------------- REQ ----------------------------
   const [delay, setDelay] = useState<number | null>(null)
 
   const isRequesting = useMemo(() => delay != null, [delay])
-  const toggleRequesting = () => {
-    setDelay(delay == null ? interval : null)
-  }
+  const startRequesting = useCallback(() => setDelay(interval), [interval])
+  const stopRequesting = useCallback(() => setDelay(null), [])
 
   // Ping in given interval
   useInterval(
@@ -32,13 +39,8 @@ const usePing = (host: string, interval: number) => {
 
 
   // ---------------------------- RES ----------------------------
-  type Response = {
-    value: PingResponse | 'error';
-    sentAt: Date;
-  }
-
   const [_, nextResponseId] = useSequencer(1)
-  const [responses, actions] = useMap<number, Response>()
+  const [map, actions] = useMap<number, Response>()
 
   const newResponse = useCallback(
     (id: number, response: PingResponse | 'error') => {
@@ -46,10 +48,12 @@ const usePing = (host: string, interval: number) => {
     },
     [actions],
   )
+
+  const responses = useMemo(() => Array.from(map.values()), [map])
   // ---------------------------- /RES ----------------------------
 
   return {
-    isRequesting, toggleRequesting,
+    isRequesting, startRequesting, stopRequesting,
     responses,
   }
 }
