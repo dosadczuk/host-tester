@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react'
 import { CartesianGrid, Label, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-type HostLineChartProps = {
+type HostChartLineProps = {
   values: number[];
 }
 
-const HostLineChart: FC<HostLineChartProps> = ({ values }) => {
+const HostChartLine: FC<HostChartLineProps> = ({ values }) => {
   const data = useMemo(
     () => values.map((value, idx) => ({ name: idx + 1, value })),
     [values],
@@ -32,4 +32,4 @@ const HostLineChart: FC<HostLineChartProps> = ({ values }) => {
   )
 }
 
-export default HostLineChart
+export default HostChartLine

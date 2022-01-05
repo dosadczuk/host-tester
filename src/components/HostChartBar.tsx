@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-type HostBarChartProps = {
+type HostChartBarProps = {
   values: number[];
 }
 
-const HostBarChart: FC<HostBarChartProps> = ({ values }) => {
+const HostChartBar: FC<HostChartBarProps> = ({ values }) => {
   const data = useMemo(
     () => values.map((value, idx) => ({ name: idx + 1, value })),
     [values],
@@ -32,4 +32,4 @@ const HostBarChart: FC<HostBarChartProps> = ({ values }) => {
   )
 }
 
-export default HostBarChart
+export default HostChartBar
