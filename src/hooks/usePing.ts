@@ -49,6 +49,11 @@ const usePing = (host: string, interval: number) => {
     [actions],
   )
 
+  const resetResponses = useCallback(
+    () => actions.reset(),
+    [actions],
+  )
+
   const responses = useMemo(() => Array.from(map.values()), [map])
 
   const responsesWithSuccess = useMemo(
@@ -93,6 +98,7 @@ const usePing = (host: string, interval: number) => {
     minimumTimes, minimum,
     maximumTimes, maximum,
 
+    resetResponses,
     responsesCount, responsesWithSuccessCount, responsesWithErrorCount,
   }
 }

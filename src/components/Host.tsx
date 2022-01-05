@@ -21,6 +21,7 @@ const Host: FC<HostProps> = ({ host }) => {
     minimumTimes, minimum,
     averageTimes, average,
     maximumTimes, maximum,
+    resetResponses,
     responsesCount, responsesWithErrorCount, responsesWithSuccessCount,
   } = usePing(host, interval)
 
@@ -71,10 +72,16 @@ const Host: FC<HostProps> = ({ host }) => {
         {
           isReachable && (
             <Disclosure.Panel>
-              <article className="py-8 text-right">
-                <PrimaryButton onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
-                  {isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
-                </PrimaryButton>
+              <article className="py-8">
+                <div className="flex justify-end items-center gap-1">
+                  <PrimaryButton onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
+                    {isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
+                  </PrimaryButton>
+                  <PrimaryButton onClick={resetResponses}>
+                    Resetuj wyniki
+                  </PrimaryButton>
+                </div>
+
 
                 <HostChart values={averageTimes}/>
               </article>
