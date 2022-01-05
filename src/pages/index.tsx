@@ -26,7 +26,7 @@ const Home: NextPage = () => {
   )
 
   return (
-    <div className="container mx-auto pt-12">
+    <div className="container mx-auto pt-12 pb-8">
       <header>
         <h1 className="text-4xl font-black">
           Zmierz czas odpowiedzi hosta
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
           </button>
         </form>
       </header>
-      <main className="pt-8">
+      <main className="pt-8 flex flex-col gap-4">
         {
           hasHosts
             ? hosts.map(host => <Host key={host} host={host}/>)
