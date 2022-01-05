@@ -2,7 +2,7 @@ import useSequencer from '@/hooks/useSequencer'
 import useInterval from '@use-it/interval'
 import axios from 'axios'
 import { PingResponse } from 'ping'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
 export type Response = {
@@ -14,30 +14,6 @@ export type ResponseWithSuccess = Omit<Response, 'value'> & { value: PingRespons
 export type ResponseWithError = Omit<Response, 'value'> & { value: 'error' }
 
 const usePing = (host: string, interval: number) => {
-  // ---------------------------- REQ ----------------------------
-  const [delay, setDelay] = useState<number | null>(null)
-
-  const isRequesting = useMemo(() => delay != null, [delay])
-  const startRequesting = useCallback(() => setDelay(interval), [interval])
-  const stopRequesting = useCallback(() => setDelay(null), [])
-
-  // Ping in given interval
-  useInterval(
-    async () => {
-      const id = nextResponseId()
-
-      try {
-        const { data } = await axios.post<PingResponse>('/api/ping', { host })
-        newResponse(id, data)
-      } catch {
-        newResponse(id, 'error')
-      }
-    },
-    delay,
-  )
-  // ---------------------------- /REQ ----------------------------
-
-
   // ---------------------------- RES ----------------------------
   const [_, nextResponseId] = useSequencer(1)
   const [map, actions] = useMap<number, Response>()
@@ -90,6 +66,46 @@ const usePing = (host: string, interval: number) => {
   const responsesWithSuccessCount = useMemo(() => responsesWithSuccess.length, [responsesWithSuccess])
   const responsesWithErrorCount = useMemo(() => responsesWithError.length, [responsesWithError])
   // ---------------------------- /RES ----------------------------
+
+
+  // ---------------------------- REQ ----------------------------
+  const [delay, setDelay] = useState<number | null>(null)
+
+  const isRequesting = useMemo(() => delay != null, [delay])
+  const startRequesting = useCallback(() => setDelay(interval), [interval])
+  const stopRequesting = useCallback(() => setDelay(null), [])
+
+  // Ping in given interval
+  const makeRequest = useCallback(
+    async () => {
+      const id = nextResponseId()
+
+      try {
+        const { data } = await axios.post<PingResponse>('/api/ping', { host })
+        newResponse(id, data)
+      } catch {
+        newResponse(id, 'error')
+      }
+    },
+    [host, newResponse, nextResponseId],
+  )
+
+  useEffect(
+    () => {
+      if (isRequesting) {
+        makeRequest()
+      }
+    },
+    [isRequesting], // tylko isRequesting
+  )
+
+  useInterval(
+    () => {
+      makeRequest()
+    },
+    delay,
+  )
+  // ---------------------------- /REQ ----------------------------
 
   return {
     isRequesting, startRequesting, stopRequesting,

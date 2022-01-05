@@ -16,7 +16,7 @@ const HostChartBar: FC<HostChartBarProps> = ({ values }) => {
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="2 2"/>
 
-        <YAxis unit="ms"/>
+        <YAxis unit="ms" width={42}/>
 
         <XAxis dataKey="name">
           <Label position="insideBottomRight" className="text-md text-gray-400 font-medium">
