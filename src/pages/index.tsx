@@ -1,121 +1,100 @@
-import axios from 'axios'
+import usePing from '@/hooks/usePing'
 import type { NextPage } from 'next'
-import { FormEventHandler, useCallback, useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 const Home: NextPage = () => {
-  const [host, setHost] = useState<string>('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isHostReachable, setIsHostReachable] = useState(false)
-  const [response, setResponse] = useState({})
+  const [host] = useState('wp.pl')
+  const { isRequesting, toggleRequesting, responses } = usePing(host, 3600)
 
-  const handleSubmit = useCallback<FormEventHandler>(
-    async (event) => {
-      event.preventDefault()
-
-      if (host.length === 0) {
-        return console.error('Wartość jest wymagana')
-      }
-
-      setIsSubmitted(true)
-
-      const { status } = await axios.post('/api/check', { host })
-      if (status === 200) {
-        setIsHostReachable(true)
-      } else {
-        setIsHostReachable(false)
-      }
-    },
-    [host],
-  )
-
-  const pingHost = useCallback(
-    async () => {
-      const { data } = await axios.post('/api/ping', { host })
-
-      setResponse(data)
-    },
-    [host],
-  )
-
-  useEffect(
+  const averageTime = useMemo(
     () => {
-      if (!isHostReachable) {
-        return
+      // @ts-ignore
+      const averages: number[] = Array.from(responses.values())
+        .map(({ value: response }) => {
+          if (response === 'error') {
+            return null
+          }
+
+          return Number(response.avg)
+        })
+        .filter(it => it != null)
+
+      if (averages.length === 0) {
+        return 0
       }
 
-      pingHost()
+      const sum = averages.reduce((avg, value) => avg + value, 0)
+
+      return (sum / averages.length).toFixed(4)
     },
-    [isHostReachable, pingHost],
+    [responses],
+  )
+
+  const chart = useMemo(
+    () => {
+      return Array.from(responses.values())
+        .map(({ value: response }, idx) => {
+          if (response === 'error') {
+            return null
+          }
+
+          return {
+            name: idx,
+            min: response.min,
+            max: response.max,
+            avg: response.avg,
+          }
+        })
+        .filter(it => it != null)
+    },
+    [responses],
   )
 
   return (
-    <div className="container mx-auto py-4 px-8 bg-white">
-      <header className="w-full mx-auto py-16 z-20">
-        <h1>
-          <div className="text-4xl text-black font-black">
-            Sprawdź czas odpowiedzi hosta
-          </div>
-          <div className="text-2xl text-indigo-500 font-bold">
-            oraz monitoruj jego stan
-          </div>
+    <section className="container mx-auto">
+      <header className="pt-12">
+        <h1 className="text-4xl font-black">
+          {host}
         </h1>
-
-        <form className="flex gap-1 py-4" onSubmit={handleSubmit}>
-          <input type="text" onChange={({ target: { value } }) => { setHost(value) }}
-                 className="w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 placeholder:text-gray-400"
-                 placeholder="np. wp.pl lub 192.168.0.1"
-          />
-
-          <button type="submit"
-                  className="px-6 bg-indigo-100 text-indigo-700 font-bold hover:bg-indigo-200 focus:ring focus:ring-indigo-500 rounded-md">
-            Sprawdź
-          </button>
-        </form>
+        <h2 className="text-lg text-indigo-500 font-bold">
+          {averageTime}ms
+        </h2>
       </header>
 
-      <main>
-        <section>
-          {isSubmitted && (
-            <article className="py-2 px-4 shadow rounded">
-              <header>
-                <div className="flex flex-row justify-between items-center">
-                  <div className="flex flex-col py-2">
-                  <span className="text-sm text-gray-400 font-medium leading-tight">
-                    Nazwa hosta
-                  </span>
-                    <span className="text-2xl text-black font-bold leading-tight">
-                    {host}
-                  </span>
-                  </div>
+      <article className="py-6">
+        <header>
+          <h2 className="text-xl text-gray-500 font-bold">
+            Średnie czasy
+          </h2>
+        </header>
 
-                  {
-                    isHostReachable
-                      ? (
-                        <div className="flex justify-start items-center">
-                        <span className="px-4 py-1 bg-green-100 text-sm text-green-700 font-medium rounded-md">
-                          Dostępny
-                        </span>
-                        </div>
-                      )
-                      : (
-                        <div className="flex justify-start items-center">
-                        <span className="px-4 py-1 bg-red-100 text-sm text-red-700 font-medium rounded-md">
-                          Niedostępny
-                        </span>
-                        </div>
-                      )
-                  }
-                </div>
-              </header>
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={chart}>
+            <CartesianGrid strokeDasharray="3 3"/>
+            <XAxis dataKey="name"/>
+            <YAxis label="ms"/>
 
-              <div>
-                {response && JSON.stringify(response, null, 4)}
-              </div>
-            </article>
-          )}
-        </section>
-      </main>
-    </div>
+            <Tooltip/>
+            <Legend/>
+
+            <Bar dataKey="avg" fill="#6366f1"/>
+          </BarChart>
+        </ResponsiveContainer>
+      </article>
+
+      <button type="button" className="px-2 py-1 border border-black" onClick={toggleRequesting}>
+        {
+          isRequesting
+            ? <span>Zakończ odpytywanie</span>
+            : <span>Zacznij odpytywanie</span>
+        }
+      </button>
+
+      <div>
+        Aktualnie odpytuje: {isRequesting ? 'tak' : 'nie'}
+      </div>
+    </section>
   )
 }
 

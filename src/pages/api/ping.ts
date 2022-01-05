@@ -6,11 +6,11 @@ import ping, { PingResponse } from 'ping'
  */
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse<PingResponse>,
+  res: NextApiResponse<PingResponse | string>,
 ) {
   const { host } = req.body
   if (host == null) {
-    res.status(400)
+    res.status(400).send('Brak informacji o hoście')
   }
 
   const data = await ping.promise.probe(host, {
@@ -18,8 +18,8 @@ export default async function handle(
   })
 
   if (data.alive) {
-    res.status(200).json(data) // OK
+    res.status(200).json(data)
   } else {
-    res.status(400) // Nieosiągalny
+    res.status(400).send('Nieosiągalny')
   }
 }

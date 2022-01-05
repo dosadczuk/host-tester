@@ -15,16 +15,20 @@
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@tailwindcss/forms": "^0.4.0",
+    "@use-it/interval": "^1.0.0",
     "axios": "^0.24.0",
     "next": "12.0.7",
     "ping": "^0.4.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "recharts": "^2.1.8",
+    "usehooks-ts": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "17.0.7",
     "@types/ping": "^0.4.1",
     "@types/react": "17.0.38",
+    "@types/recharts": "^1.8.23",
     "autoprefixer": "^10.4.1",
     "eslint": "8.6.0",
     "eslint-config-next": "12.0.7",

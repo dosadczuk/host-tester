@@ -10,14 +10,13 @@ export default async function handle(
 ) {
   const { host } = req.body
   if (host == null) {
-    res.status(400).json('Brak informacji o hoście')
+    res.status(400).send('Brak informacji o hoście')
   }
 
   const { alive } = await ping.promise.probe(host)
-
   if (alive) {
-    res.status(200).json('OK') // OK
+    res.status(200).send('OK')
   } else {
-    res.status(400).json('Nieosiągalny') // Nieosiągalny
+    res.status(400).send('Nieosiągalny')
   }
 }
