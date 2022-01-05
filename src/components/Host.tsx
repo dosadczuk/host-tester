@@ -1,9 +1,12 @@
 import Milliseconds from '@/components/common/Milliseconds'
 import HostBarChart from '@/components/HostBarChart'
+import HostLineChart from '@/components/HostLineChart'
 import useHost from '@/hooks/useHost'
 import usePing from '@/hooks/usePing'
-import { faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faChartBar } from '@fortawesome/free-regular-svg-icons'
+import { faChartLine, faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Tab } from '@headlessui/react'
 import { FC, useEffect, useState } from 'react'
 
 type HostProps = {
@@ -87,7 +90,38 @@ const Host: FC<HostProps> = ({ host }) => {
         isReachable && (
           <>
             <article className="py-8">
-              <HostBarChart values={averageTimes}/>
+              <Tab.Group>
+                <Tab.List as="div" className="pb-2 flex justify-end items-center gap-1">
+                  <Tab>
+                    {({ selected }) => (
+                      <button
+                        className={`px-2 py-0.5 border ${selected ? 'border-blue-500' : 'border-gray-200'} rounded`}
+                        title="Wykres słupkowy"
+                      >
+                        <FontAwesomeIcon icon={faChartBar} className={selected ? 'text-blue-600' : 'text-gray-300'}/>
+                      </button>
+                    )}
+                  </Tab>
+                  <Tab>
+                    {({ selected }) => (
+                      <button
+                        className={`px-2 py-0.5 border ${selected ? 'border-blue-500' : 'border-gray-200'} rounded`}
+                        title="Wykres liniowy"
+                      >
+                        <FontAwesomeIcon icon={faChartLine} className={selected ? 'text-blue-600' : 'text-gray-300'}/>
+                      </button>
+                    )}
+                  </Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>
+                    <HostBarChart values={averageTimes}/>
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <HostLineChart values={averageTimes}/>
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
             </article>
           </>
         )
