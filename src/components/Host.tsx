@@ -5,6 +5,7 @@ import HostStatus from '@/components/HostStatus'
 import HostTimeMeasurement from '@/components/HostTimeMeasurement'
 import useHost from '@/hooks/useHost'
 import usePing from '@/hooks/usePing'
+import { Disclosure } from '@headlessui/react'
 import { FC, useEffect, useState } from 'react'
 
 type HostProps = {
@@ -33,50 +34,54 @@ const Host: FC<HostProps> = ({ host }) => {
   )
 
   return (
-    <section className="py-2 px-4">
-      <header className="flex justify-between items-center">
-        <h2 className="flex items-center gap-2">
-          <HostStatus isChecking={isChecking} isReachable={isReachable}/>
-          <HostName name={host} ip={ip}/>
-        </h2>
+    <section>
+      <Disclosure as="div" className="px-4 py-4 rounded-lg shadow">
+        <Disclosure.Button className="w-full">
+          <header className="flex justify-between items-center">
+            <h2 className="flex items-center gap-2">
+              <HostStatus isChecking={isChecking} isReachable={isReachable}/>
+              <HostName name={host} ip={ip}/>
+            </h2>
 
-        <h3 className="flex items-center gap-2">
-          <PrimaryButton onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
-            {isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
-          </PrimaryButton>
+            <h3 className="flex items-center gap-2">
+              <HostTimeMeasurement
+                name="MIN"
+                value={minimum}
+                title="Minimalny czas odpowiedzi"
+                className="bg-emerald-100 text-emerald-700"
+              />
 
-          <HostTimeMeasurement
-            name="MIN"
-            value={minimum}
-            title="Minimalny czas odpowiedzi"
-            className="bg-emerald-100 text-emerald-700"
-          />
+              <HostTimeMeasurement
+                name="AVG"
+                value={average}
+                title="Średni czas odpowiedzi"
+                className="bg-blue-100 text-blue-700"
+              />
 
-          <HostTimeMeasurement
-            name="AVG"
-            value={average}
-            title="Średni czas odpowiedzi"
-            className="bg-blue-100 text-blue-700"
-          />
+              <HostTimeMeasurement
+                name="MAX"
+                value={maximum}
+                title="Maksymalny czas odpowiedzi"
+                className="bg-rose-100 text-rose-700"
+              />
+            </h3>
+          </header>
+        </Disclosure.Button>
 
-          <HostTimeMeasurement
-            name="MAX"
-            value={maximum}
-            title="Maksymalny czas odpowiedzi"
-            className="bg-rose-100 text-rose-700"
-          />
-        </h3>
-      </header>
+        {
+          isReachable && (
+            <Disclosure.Panel>
+              <article className="py-8 text-right">
+                <PrimaryButton onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
+                  {isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
+                </PrimaryButton>
 
-      {
-        isReachable && (
-          <>
-            <article className="py-8">
-              <HostChart values={averageTimes}/>
-            </article>
-          </>
-        )
-      }
+                <HostChart values={averageTimes}/>
+              </article>
+            </Disclosure.Panel>
+          )
+        }
+      </Disclosure>
     </section>
   )
 }
