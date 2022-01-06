@@ -1,149 +1,117 @@
-import Button from '@/components/common/Button'
-import HostChartBar from '@/components/HostChartBar'
-import HostChartLine from '@/components/HostChartLine'
-import HostIntervals, { Interval } from '@/components/HostIntervals'
+import { DangerButton, PrimaryButton } from '@/components/common/Button'
+import HostChartButton from '@/components/HostChartButton'
+import HostChartWithAverageTimes from '@/components/HostChartWithAverageTimes'
+import HostInterval from '@/components/HostInterval'
 import HostName from '@/components/HostName'
 import HostStatus from '@/components/HostStatus'
 import HostTimeMeasurement from '@/components/HostTimeMeasurement'
-import useHost from '@/hooks/useHost'
-import usePing from '@/hooks/usePing'
-import { faChartBar } from '@fortawesome/free-regular-svg-icons'
-import { faChartLine, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import useHostCheck from '@/hooks/useHostCheck'
+import useHostPingRequest from '@/hooks/useHostPingRequest'
+import useHostPingResponses from '@/hooks/useHostPingResponses'
+import { faChartBar, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
+import { faPause, faPlay, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tab } from '@headlessui/react'
-import { FC, useEffect, useState } from 'react'
+import { FC } from 'react'
+import { If, Then } from 'react-if'
 
 type HostProps = {
-  host: string;
+  value: string;
+
+  onRemove: () => void;
 }
 
-const intervals: Interval[] = [
-  { value: 1000, title: '1 s' },
-  { value: 5000, title: '5 s' },
-  { value: 10000, title: '10 s' },
-  { value: 60000, title: '1 min' },
-  { value: 600000, title: '10 min' },
-]
-
-const Host: FC<HostProps> = ({ host }) => {
-  const [interval, setInterval] = useState(intervals[2])
-
-  const { ip, isChecking, isReachable } = useHost(host)
+const Host: FC<HostProps> = ({ value, onRemove }) => {
+  const { IP, isChecking, isReachable } = useHostCheck(value)
   const {
-    isRequesting, startRequesting, stopRequesting,
-    minimumTimes, minimum,
-    averageTimes, average,
-    maximumTimes, maximum,
-    resetResponses,
-    responsesCount, responsesWithErrorCount, responsesWithSuccessCount,
-  } = usePing(host, interval.value)
-
-  useEffect(
-    () => {
-      if (isReachable) {
-        startRequesting()
-      }
-    },
-    [isReachable, startRequesting],
-  )
-
-  useEffect(
-    () => {
-      if (isReachable) {
-        stopRequesting()
-        startRequesting()
-      }
-    },
-    [interval], // tylko interval
-  )
+    addResponse, clearResponses,
+    minimum, average, maximum,
+    averageTimes,
+  } = useHostPingResponses()
+  const {
+    isRequesting,
+    startRequesting,
+    pauseRequesting,
+    resetRequesting,
+  } = useHostPingRequest(value, addResponse)
 
   return (
-    <section className="p-4 px-6 bg-white text-gray-800 border border-gray-200 rounded-xl">
-      <header className="flex justify-between items-center py-4">
-        <h2 className="flex items-center gap-2">
+    <section className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
+      <header className="flex justify-between items-center py-2">
+        <h2 className="flex items-center gap-3">
           <HostStatus isChecking={isChecking} isReachable={isReachable}/>
-          <HostName name={host} ip={ip}/>
+          <HostName name={value} ip={IP}/>
         </h2>
 
-        <h3 className="flex items-center gap-2">
-          <HostTimeMeasurement
-            name="MIN"
-            value={minimum}
-            title="Minimalny czas odpowiedzi"
-            className="bg-emerald-100 text-emerald-700"
-          />
+        <h3 className="flex items-center gap-1">
+          <div className="flex items-center gap-1 border-r border-r-gray-100 pr-3 mr-2">
+            <HostTimeMeasurement
+              name="min"
+              value={minimum}
+              title="Minimalny czas odpowiedzi"
+              className="bg-emerald-100 text-emerald-700"
+            />
 
-          <HostTimeMeasurement
-            name="AVG"
-            value={average}
-            title="Średni czas odpowiedzi"
-            className="bg-blue-100 text-blue-700"
-          />
+            <HostTimeMeasurement
+              name="avg"
+              value={average}
+              title="Średni czas odpowiedzi"
+              className="bg-blue-100 text-blue-700"
+            />
 
-          <HostTimeMeasurement
-            name="MAX"
-            value={maximum}
-            title="Maksymalny czas odpowiedzi"
-            className="bg-rose-100 text-rose-700"
-          />
+            <HostTimeMeasurement
+              name="max"
+              value={maximum}
+              title="Maksymalny czas odpowiedzi"
+              className="bg-rose-100 text-rose-700"
+            />
+          </div>
+
+          <If condition={isReachable}>
+            <Then>
+              <PrimaryButton
+                title={isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
+                onClick={() => isRequesting ? pauseRequesting() : startRequesting()}
+              >
+                <FontAwesomeIcon icon={isRequesting ? faPause : faPlay} size="sm"/>
+              </PrimaryButton>
+
+              <PrimaryButton
+                title="Wyczyść wyniki odpytywania"
+                onClick={clearResponses}
+              >
+                <FontAwesomeIcon icon={faSyncAlt} size="sm"/>
+              </PrimaryButton>
+            </Then>
+          </If>
+
+          <DangerButton title="Usuń hosta z listy" onClick={onRemove}>
+            <FontAwesomeIcon icon={faTrashAlt} size="sm"/>
+          </DangerButton>
         </h3>
       </header>
 
-      {
-        isReachable && (
-          <article>
-            <Tab.Group as="div" className="pb-4 py-4">
-              <Tab.List as="div" className="pb-2 flex justify-between items-center gap-1">
-                <div className="flex items-center gap-2">
-                  <Button onClick={() => isRequesting ? stopRequesting() : startRequesting()}>
-                    {isRequesting ? 'Zatrzymaj pomiar' : 'Rozpocznij pomiar'}
-                  </Button>
-                  <Button onClick={resetResponses}>
-                    Resetuj wyniki
-                  </Button>
-                </div>
-                <div className="flex justify-end items-center gap-1">
-                  <HostIntervals
-                    intervals={intervals}
-                    interval={interval}
-                    setInterval={setInterval}
-                  />
-                  <Tab>
-                    {({ selected }) => <ChartButton icon={faChartBar} title="Wykres słupkowy" active={selected}/>}
-                  </Tab>
-                  <Tab>
-                    {({ selected }) => <ChartButton icon={faChartLine} title="Wykres liniowy" active={selected}/>}
-                  </Tab>
-                </div>
-              </Tab.List>
-              <Tab.Panels>
-                <Tab.Panel>
-                  <HostChartBar title="Średni czas odpowiedzi" values={averageTimes}/>
-                </Tab.Panel>
-                <Tab.Panel>
-                  <HostChartLine title="Średni czas odpowiedzi" values={averageTimes}/>
-                </Tab.Panel>
-              </Tab.Panels>
-            </Tab.Group>
-          </article>
-        )
-      }
+      <If condition={isReachable}>
+        <Then>
+          <Tab.Group as="article" className="pb-2 pt-8">
+            <Tab.List as="div" className="flex justify-end items-center gap-1">
+              <div>
+                <HostInterval onChange={(interval) => resetRequesting(interval)}/>
+              </div>
+              <Tab as="button">
+                {({ selected }) => <HostChartButton icon={faChartBar} active={selected}/>}
+              </Tab>
+            </Tab.List>
+
+            <Tab.Panels>
+              <Tab.Panel>
+                <HostChartWithAverageTimes averageTimes={averageTimes}/>
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+        </Then>
+      </If>
     </section>
-  )
-}
-
-
-type ChartButtonProps = {
-  icon: IconDefinition;
-  active: boolean;
-  title?: string;
-}
-
-const ChartButton: FC<ChartButtonProps> = ({ icon, active, title }) => {
-  return (
-    <div className={`px-2 py-0.5 border ${active ? 'border-blue-500' : 'border-gray-200'} rounded`} title={title}>
-      <FontAwesomeIcon icon={icon} className={active ? 'text-blue-600' : 'text-gray-300'}/>
-    </div>
   )
 }
 

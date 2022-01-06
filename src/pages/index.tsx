@@ -1,59 +1,43 @@
+import { Heading1 } from '@/components/common/Typography'
 import Host from '@/components/Host'
+import HostsForm from '@/components/HostsForm'
+import useHostsForm from '@/hooks/useHostsForm'
 import type { NextPage } from 'next'
-import { ChangeEventHandler, FormEventHandler, useCallback, useMemo, useState } from 'react'
+import { Else, If, Then } from 'react-if'
 
 const Home: NextPage = () => {
-  const [host, setHost] = useState('')
-
-  const [hosts, setHosts] = useState<string[]>([])
-  const hasHosts = useMemo(() => hosts.length > 0, [hosts])
-
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
-    (event) => {
-      event.preventDefault()
-
-      setHosts(values => [...values, host])
-      setHost('')
-    },
-    [host],
-  )
-
-  const handleHost = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => {
-      setHost(event.target.value)
-    },
-    [],
-  )
+  const { hosts, host, hostError, handleHostChange, handleHostSubmit, removeHost } = useHostsForm()
 
   return (
     <div className="container mx-auto pt-12 pb-8">
       <header>
-        <h1 className="text-4xl font-black">
-          Zmierz czas odpowiedzi hosta
+        <h1>
+          <Heading1>
+            Sprawdź czas odpowiedzi hosta
+          </Heading1>
         </h1>
-        <form className="py-4 flex items-center gap-1" onSubmit={handleSubmit}>
-          <input
-            type="text"
+
+        <form onSubmit={handleHostSubmit}>
+          <HostsForm
             value={host}
-            onChange={handleHost}
-            className="w-full border border-gray-200 rounded placeholder-gray-400 focus:outline-none"
-            placeholder="np. wp.pl"
+            error={hostError}
+            onChange={handleHostChange}
           />
-          <button type="submit" className="py-2 px-4 bg-blue-600 text-white rounded">
-            Sprawdź
-          </button>
         </form>
       </header>
       <main className="pt-8 flex flex-col gap-4">
-        {
-          hasHosts
-            ? hosts.map(host => <Host key={host} host={host}/>)
-            : (
-              <div className="text-6xl text-gray-300 font-black">
-                Brak hostów
-              </div>
-            )
-        }
+        <If condition={hosts.length > 0}>
+          <Then>
+            {hosts.map(host => (
+              <Host key={host} value={host} onRemove={() => removeHost(host)}/>
+            ))}
+          </Then>
+          <Else>
+            <div className="text-6xl text-gray-300 font-black">
+              Brak hostów
+            </div>
+          </Else>
+        </If>
       </main>
     </div>
   )

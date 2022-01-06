@@ -1,18 +1,29 @@
 import { FC, MouseEventHandler } from 'react'
 
 type ButtonProps = {
-  onClick?: MouseEventHandler;
-  className?: string;
+  title?: string;
+
+  onClick: MouseEventHandler;
 }
 
-const Button: FC<ButtonProps> = ({ onClick, className = '', children }) => {
+export const PrimaryButton: FC<ButtonProps> = ({ onClick, title, children }) => {
   return (
     <button
-      className={`px-4 py-1 text-sm text-blue-600 border border-blue-600 rounded transition-colors hover:bg-blue-600 hover:text-white focus:ring focus:ring-offset-2 ${className}`}
+      className={`px-3 py-0.5 text-indigo-600 border border-indigo-400 rounded transition-colors hover:bg-indigo-600 hover:text-white focus:ring focus:ring-offset-2`}
+      title={title}
       onClick={onClick}>
       {children}
     </button>
   )
 }
 
-export default Button
+export const DangerButton: FC<ButtonProps> = ({ onClick, title, children }) => {
+  return (
+    <button
+      className={`px-3 py-0.5 text-rose-600 border border-rose-400 rounded transition-colors hover:bg-rose-600 hover:text-white focus:ring focus:ring-offset-2`}
+      title={title}
+      onClick={onClick}>
+      {children}
+    </button>
+  )
+}

@@ -10,8 +10,8 @@ type HostTimeMeasurementProps = {
 
 const HostTimeMeasurement: FC<HostTimeMeasurementProps> = ({ name, value, title, className }) => {
   return (
-    <div className={`px-4 py-0.5 rounded ${className}`} title={title}>
-      <span className="text-xs mr-2">{name}</span>
+    <div className={`px-4 py-0.5 border border-transparent rounded ${className}`} title={title}>
+      <span className="text-xs mr-2 uppercase">{name}</span>
       <span className="font-medium">
         <Milliseconds value={value}/>
       </span>
