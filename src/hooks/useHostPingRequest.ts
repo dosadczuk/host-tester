@@ -14,6 +14,15 @@ const useHostPingRequest = (host: string, onResponse: (requestId: number, respon
   const pauseRequesting = () => setDelay(null)
   const resetRequesting = (newInterval: number) => setInterval(newInterval)
 
+  const nextRequestId = useCallback(
+    (): number => {
+      const id = requestId;
+      setRequestId(requestId + 1);
+      return id;
+    },
+    [requestId]
+  )
+
   useEffect(
     () => {
       pauseRequesting()
@@ -25,17 +34,17 @@ const useHostPingRequest = (host: string, onResponse: (requestId: number, respon
 
   const makeRequest = useCallback(
     async () => {
+      const id = nextRequestId()
+
       try {
         const { data } = await axios.post<PingResponse>('/api/ping', { host })
 
-        onResponse(requestId, data)
+        onResponse(id, data)
       } catch {
-        onResponse(requestId, null)
-      } finally {
-        setRequestId(requestId + 1)
+        onResponse(id, null)
       }
     },
-    [host, onResponse, requestId],
+    [host, nextRequestId, onResponse],
   )
 
   // jak zmieni się interval, to od razu robimy żądanie, okresowym wywołaniem zajmuje się useInterval
