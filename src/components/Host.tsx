@@ -22,7 +22,7 @@ type HostProps = {
 }
 
 const Host: FC<HostProps> = ({ value, onRemove }) => {
-  const { IP, isChecking, isReachable } = useHostCheck(value)
+  const { id: sessionId, ip, isChecking, isReachable } = useHostCheck(value)
   const {
     addResponse, clearResponses,
     minimum, average, maximum,
@@ -33,14 +33,14 @@ const Host: FC<HostProps> = ({ value, onRemove }) => {
     startRequesting,
     pauseRequesting,
     resetRequesting,
-  } = useHostPingRequest(value, addResponse)
+  } = useHostPingRequest(sessionId, addResponse)
 
   return (
-    <section className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
+    <section id={sessionId} className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
       <header className="flex justify-between items-center py-2">
         <h2 className="flex items-center gap-3">
           <HostStatus isChecking={isChecking} isReachable={isReachable}/>
-          <HostName name={value} ip={IP}/>
+          <HostName name={value} ip={ip}/>
         </h2>
 
         <h3 className="flex items-center gap-1">

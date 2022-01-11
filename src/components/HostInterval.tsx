@@ -17,7 +17,6 @@ const intervals = [
 const HostInterval: FC<Props> = ({ onChange }) => {
   const [interval, setInterval] = useState(intervals[2])
 
-  // na starcie informujemy o wartości
   useEffect(() => onChange(interval.value), [onChange, interval])
 
   return (

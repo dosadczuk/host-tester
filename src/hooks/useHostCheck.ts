@@ -3,7 +3,8 @@ import { PingResponse } from 'ping'
 import { useEffect, useState } from 'react'
 
 const useHostCheck = (host: string) => {
-  const [IP, setIP] = useState<string | null>(null)
+  const [id, setId] = useState<string>('')
+  const [ip, setIp] = useState<string | null>(null)
 
   const [isChecking, setChecking] = useState(true)
   const [isReachable, setReachable] = useState(false)
@@ -15,10 +16,11 @@ const useHostCheck = (host: string) => {
         try {
           setChecking(true)
 
-          const response = await axios.post<PingResponse>('/api/check', { host })
-          const { numeric_host = null } = response.data
+          const response = await axios.post<{ id: string, data: PingResponse }>('/api/host/check', { host })
+          const { id, data } = response.data
 
-          setIP(numeric_host)
+          setId(id)
+          setIp(data.numeric_host ?? null)
           setReachable(true)
         } catch {
           setReachable(false)
@@ -33,7 +35,7 @@ const useHostCheck = (host: string) => {
     [host],
   )
 
-  return { IP, isChecking, isReachable }
+  return { id, ip, isChecking, isReachable }
 }
 
 export default useHostCheck

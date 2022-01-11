@@ -9,7 +9,7 @@ const useHostsForm = () => {
   const [host, setHost] = useState('')
   const [hostError, setHostError] = useState<string | null>(null)
 
-  const removeHost = (host: string) => {
+  const removeHost = async (host: string) => {
     setHosts(values => values.filter(it => it !== host))
   }
 

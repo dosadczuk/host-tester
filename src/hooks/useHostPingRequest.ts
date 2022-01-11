@@ -3,7 +3,7 @@ import axios from 'axios'
 import { PingResponse } from 'ping'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-const useHostPingRequest = (host: string, onResponse: (requestId: number, response: PingResponse | null) => void) => {
+const useHostPingRequest = (sessionId: string, onResponse: (requestId: number, response: PingResponse | null) => void) => {
   const [requestId, setRequestId] = useState(1)
   const [interval, setInterval] = useState<number | null>(null)
   const [delay, setDelay] = useState<number | null>(null)
@@ -37,14 +37,14 @@ const useHostPingRequest = (host: string, onResponse: (requestId: number, respon
       const id = nextRequestId()
 
       try {
-        const { data } = await axios.post<PingResponse>('/api/ping', { host })
+        const { data } = await axios.post<PingResponse>('/api/host/ping', { sessionId, requestId: id })
 
         onResponse(id, data)
       } catch {
         onResponse(id, null)
       }
     },
-    [host, nextRequestId, onResponse],
+    [sessionId, nextRequestId, onResponse],
   )
 
   // jak zmieni się interval, to od razu robimy żądanie, okresowym wywołaniem zajmuje się useInterval
