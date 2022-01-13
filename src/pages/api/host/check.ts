@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import ping from 'ping'
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient()
+import { Prisma } from "@/database/prisma";
 
 /**
  * Sprawdzenie, czy można połączyć się z hostem.
@@ -19,7 +17,7 @@ export default async function handle(
 
   const data = await ping.promise.probe(host)
   if (data.alive) {
-    const session = await prisma.session.create({
+    const session = await Prisma.instance.session.create({
       data: {
         host,
         hostIp: data.numeric_host

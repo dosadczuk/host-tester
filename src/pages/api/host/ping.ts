@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import ping, { PingResponse } from 'ping'
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient()
+import { Prisma } from "@/database/prisma";
 
 /**
  * Pingowanie podanego hosta.
@@ -22,7 +20,7 @@ export default async function handle(
     return
   }
 
-  const session = await prisma.session.findUnique({ where: { id: sessionId } })
+  const session = await Prisma.instance.session.findUnique({ where: { id: sessionId } })
   if (session == null) {
     res.status(404).send('Nie znaleziono sesji')
     return
@@ -38,7 +36,7 @@ export default async function handle(
   }
 
   try {
-    await prisma.sessionPing.create({
+    await Prisma.instance.sessionPing.create({
       data: {
         requestId,
         sessionId,
