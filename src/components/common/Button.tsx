@@ -19,7 +19,8 @@ export const PrimaryButton: FC<ButtonProps> = ({ onClick, title, children }) => 
 export const SecondaryButton: FC<ButtonProps> = ({ onClick, title, children }) => {
   return (
     <button
-      className={`px-3 py-0.5 text-gray-400 border border-gray-300 rounded transition-colors hover:bg-gray-500 hover:text-white focus:ring focus:ring-offset-2`}      title={title}
+      className={`px-3 py-0.5 text-gray-300 border border-gray-300 rounded transition-colors hover:bg-gray-200 hover:text-gray-700 hover:text-white focus:ring focus:ring-offset-2`}
+      title={title}
       onClick={onClick}>
       {children}
     </button>
