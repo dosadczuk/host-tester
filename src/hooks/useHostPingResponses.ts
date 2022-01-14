@@ -19,6 +19,8 @@ const useHostPingResponses = () => {
   const minimumTimes = useMemo(() => responsesSuccessful.map(({ min }) => Number(min)), [responsesSuccessful])
   const maximumTimes = useMemo(() => responsesSuccessful.map(({ max }) => Number(max)), [responsesSuccessful])
 
+  const standardDeviations = useMemo(() => responsesSuccessful.map(({ stddev }) => Number(stddev)), [responsesSuccessful])
+
   const average = useMemo(
     () => {
       const total = averageTimes.reduce((acc, avg) => acc + avg, 0)
@@ -54,6 +56,7 @@ const useHostPingResponses = () => {
     averageTimes, average,
     minimumTimes, minimum,
     maximumTimes, maximum,
+    standardDeviations,
 
     clearResponses,
   }

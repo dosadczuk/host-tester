@@ -3,7 +3,7 @@ import { FC, MouseEventHandler } from 'react'
 type ButtonProps = {
   title?: string;
 
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
 export const PrimaryButton: FC<ButtonProps> = ({ onClick, title, children }) => {
@@ -11,6 +11,15 @@ export const PrimaryButton: FC<ButtonProps> = ({ onClick, title, children }) => 
     <button
       className={`px-3 py-0.5 text-indigo-600 border border-indigo-400 rounded transition-colors hover:bg-indigo-600 hover:text-white focus:ring focus:ring-offset-2`}
       title={title}
+      onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+export const SecondaryButton: FC<ButtonProps> = ({ onClick, title, children }) => {
+  return (
+    <button
+      className={`px-3 py-0.5 text-gray-400 border border-gray-300 rounded transition-colors hover:bg-gray-500 hover:text-white focus:ring focus:ring-offset-2`}      title={title}
       onClick={onClick}>
       {children}
     </button>

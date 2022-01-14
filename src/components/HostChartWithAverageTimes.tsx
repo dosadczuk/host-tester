@@ -1,15 +1,21 @@
 import { Heading3 } from '@/components/common/Typography'
 import { FC, useMemo } from 'react'
-import { Bar, BarChart, CartesianGrid, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ErrorBar, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 type HostChartWithAverageTimesProps = {
   averageTimes: number[];
+  standardDeviations: number[];
 }
 
-const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ averageTimes }) => {
+const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ averageTimes, standardDeviations }) => {
   const data = useMemo(
-    () => averageTimes.map((value, idx) => ({ name: idx + 1, value })),
-    [averageTimes],
+    () => Array.from({ length: averageTimes.length }, (_, idx) => {
+      const avg = averageTimes[idx]
+      const stddev = standardDeviations[idx]
+
+      return { name: idx + 1, avg, stddev }
+    }),
+    [averageTimes, standardDeviations],
   )
 
   return (
@@ -33,7 +39,9 @@ const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ average
 
           <Tooltip/>
 
-          <Bar dataKey="value" name="Avg" fill="#3b82f6" stroke="#2563eb" strokeWidth={3} opacity={.8}/>
+          <Bar dataKey="avg" name="Avg" fill="#3b82f6" stroke="#2563eb" strokeWidth={2} opacity={.8}>
+            <ErrorBar dataKey="stddev"/>
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </>

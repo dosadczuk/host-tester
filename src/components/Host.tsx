@@ -1,4 +1,4 @@
-import { DangerButton, PrimaryButton } from '@/components/common/Button'
+import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/common/Button'
 import HostChartButton from '@/components/HostChartButton'
 import HostChartWithAverageTimes from '@/components/HostChartWithAverageTimes'
 import HostInterval from '@/components/HostInterval'
@@ -9,7 +9,7 @@ import useHostCheck from '@/hooks/useHostCheck'
 import useHostPingRequest from '@/hooks/useHostPingRequest'
 import useHostPingResponses from '@/hooks/useHostPingResponses'
 import { faChartBar, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
-import { faPause, faPlay, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faPause, faPlay, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Disclosure, Tab } from '@headlessui/react'
 import { FC } from 'react'
@@ -26,7 +26,8 @@ const Host: FC<HostProps> = ({ value, onRemove }) => {
   const {
     addResponse, clearResponses,
     minimum, average, maximum,
-    averageTimes,
+    minimumTimes, averageTimes, maximumTimes,
+    standardDeviations
   } = useHostPingResponses()
   const {
     isRequesting,
@@ -38,61 +39,69 @@ const Host: FC<HostProps> = ({ value, onRemove }) => {
   return (
     <section id={sessionId} className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
       <Disclosure defaultOpen>
-        <Disclosure.Button as="div" className="w-full cursor-pointer">
-          <header className="flex justify-between items-center py-2">
-            <h2 className="flex items-center gap-3 text-left">
-              <HostStatus isChecking={isChecking} isReachable={isReachable}/>
-              <HostName name={value} ip={ip}/>
-            </h2>
+        <header className="flex justify-between items-center py-2">
+          <h2 className="flex items-center gap-3 text-left">
+            <HostStatus isChecking={isChecking} isReachable={isReachable}/>
+            <HostName name={value} ip={ip}/>
+          </h2>
 
-            <h3 className="flex items-center gap-1">
-              <div className="flex items-center gap-1 border-r border-r-gray-100 pr-3 mr-2">
-                <HostTimeMeasurement
-                  name="min"
-                  value={minimum}
-                  title="Minimalny czas odpowiedzi"
-                  className="bg-emerald-100 text-emerald-700"
-                />
+          <h3 className="flex items-center gap-1">
+            <div className="flex items-center gap-1 border-r border-r-gray-100 pr-3 mr-2">
+              <HostTimeMeasurement
+                name="min"
+                value={minimum}
+                title="Minimalny czas odpowiedzi"
+                className="bg-emerald-100 text-emerald-700"
+              />
 
-                <HostTimeMeasurement
-                  name="avg"
-                  value={average}
-                  title="Średni czas odpowiedzi"
-                  className="bg-blue-100 text-blue-700"
-                />
+              <HostTimeMeasurement
+                name="avg"
+                value={average}
+                title="Średni czas odpowiedzi"
+                className="bg-blue-100 text-blue-700"
+              />
 
-                <HostTimeMeasurement
-                  name="max"
-                  value={maximum}
-                  title="Maksymalny czas odpowiedzi"
-                  className="bg-rose-100 text-rose-700"
-                />
-              </div>
+              <HostTimeMeasurement
+                name="max"
+                value={maximum}
+                title="Maksymalny czas odpowiedzi"
+                className="bg-rose-100 text-rose-700"
+              />
+            </div>
 
-              <If condition={isReachable}>
-                <Then>
-                  <PrimaryButton
-                    title={isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
-                    onClick={() => isRequesting ? pauseRequesting() : startRequesting()}
-                  >
-                    <FontAwesomeIcon icon={isRequesting ? faPause : faPlay} size="sm"/>
-                  </PrimaryButton>
+            <If condition={isReachable}>
+              <Then>
+                <PrimaryButton
+                  title={isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
+                  onClick={() => isRequesting ? pauseRequesting() : startRequesting()}
+                >
+                  <FontAwesomeIcon icon={isRequesting ? faPause : faPlay} size="sm"/>
+                </PrimaryButton>
 
-                  <PrimaryButton
-                    title="Wyczyść wyniki odpytywania"
-                    onClick={clearResponses}
-                  >
-                    <FontAwesomeIcon icon={faSyncAlt} size="sm"/>
-                  </PrimaryButton>
-                </Then>
-              </If>
+                <PrimaryButton
+                  title="Wyczyść wyniki odpytywania"
+                  onClick={clearResponses}
+                >
+                  <FontAwesomeIcon icon={faSyncAlt} size="sm"/>
+                </PrimaryButton>
+              </Then>
+            </If>
 
-              <DangerButton title="Usuń hosta z listy" onClick={onRemove}>
-                <FontAwesomeIcon icon={faTrashAlt} size="sm"/>
-              </DangerButton>
-            </h3>
-          </header>
-        </Disclosure.Button>
+            <DangerButton title="Usuń hosta z listy" onClick={onRemove}>
+              <FontAwesomeIcon icon={faTrashAlt} size="sm"/>
+            </DangerButton>
+
+            <SecondaryButton>
+              <Disclosure.Button className="w-full cursor-pointer">
+                {({ open }) => (
+                  open
+                    ? <FontAwesomeIcon icon={faChevronUp}/>
+                    : <FontAwesomeIcon icon={faChevronDown}/>
+                )}
+              </Disclosure.Button>
+            </SecondaryButton>
+          </h3>
+        </header>
 
         <If condition={isReachable}>
           <Then>
@@ -109,7 +118,10 @@ const Host: FC<HostProps> = ({ value, onRemove }) => {
 
                 <Tab.Panels>
                   <Tab.Panel>
-                    <HostChartWithAverageTimes averageTimes={averageTimes}/>
+                    <HostChartWithAverageTimes
+                      averageTimes={averageTimes}
+                      standardDeviations={standardDeviations}
+                    />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
