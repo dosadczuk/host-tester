@@ -91,11 +91,15 @@ const Host: FC<HostProps> = ({ value, onRemove }) => {
               <FontAwesomeIcon icon={faTrashAlt} size="sm"/>
             </DangerButton>
 
-            <Disclosure.Button as={SecondaryButton}>
+            <Disclosure.Button as="div">
               {({ open }) => (
-                open
-                  ? <FontAwesomeIcon icon={faChevronUp}/>
-                  : <FontAwesomeIcon icon={faChevronDown}/>
+                <SecondaryButton>
+                  {
+                    open
+                    ? <FontAwesomeIcon icon={faChevronUp}/>
+                    : <FontAwesomeIcon icon={faChevronDown}/>
+                  }
+                </SecondaryButton>
               )}
             </Disclosure.Button>
           </h3>
