@@ -27,7 +27,7 @@ export default async function handle(
   }
 
   const data = await ping.promise.probe(session.host, {
-    extra: ['-n', '5'],
+    min_reply: 5
   })
 
   if (!data.alive) {
