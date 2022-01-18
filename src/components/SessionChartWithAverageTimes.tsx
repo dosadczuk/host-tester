@@ -2,12 +2,12 @@ import { Heading3 } from '@/components/common/Typography'
 import { FC, useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, ErrorBar, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-type HostChartWithAverageTimesProps = {
+type SessionChartWithAverageTimesProps = {
   averageTimes: number[];
   standardDeviations: number[];
 }
 
-const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ averageTimes, standardDeviations }) => {
+const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = ({ averageTimes, standardDeviations }) => {
   const data = useMemo(
     () => Array.from({ length: averageTimes.length }, (_, idx) => {
       const avg = averageTimes[idx]
@@ -15,7 +15,7 @@ const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ average
 
       return { name: idx + 1, avg, stddev }
     }),
-    [averageTimes, standardDeviations],
+    [ averageTimes, standardDeviations ],
   )
 
   return (
@@ -27,9 +27,9 @@ const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ average
       </h3>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="2 2"/>
+          <CartesianGrid strokeDasharray="2 2" />
 
-          <YAxis unit="ms" stroke="#4b5563" width={42}/>
+          <YAxis unit="ms" stroke="#4b5563" width={42} />
 
           <XAxis stroke="#4b5563" height={48}>
             <Label position="insideBottom" className="text-gray-600 font-medium">
@@ -37,10 +37,10 @@ const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ average
             </Label>
           </XAxis>
 
-          <Tooltip/>
+          <Tooltip />
 
           <Bar dataKey="avg" name="Avg" fill="#3b82f6" stroke="#2563eb" strokeWidth={2} opacity={.8}>
-            <ErrorBar dataKey="stddev"/>
+            <ErrorBar dataKey="stddev" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -48,4 +48,4 @@ const HostChartWithAverageTimes: FC<HostChartWithAverageTimesProps> = ({ average
   )
 }
 
-export default HostChartWithAverageTimes
+export default SessionChartWithAverageTimes

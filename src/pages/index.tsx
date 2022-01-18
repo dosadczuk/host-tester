@@ -1,15 +1,17 @@
 import { Heading1 } from '@/components/common/Typography'
-import Host from '@/components/Host'
-import HostsForm from '@/components/HostsForm'
-import useHostsForm from '@/hooks/useHostsForm'
+import Session from '@/components/Session'
+import SessionForm from '@/components/SessionForm'
+import useClient from '@/hooks/useClient'
+import useSessionForm from '@/hooks/useSessionForm'
 import type { NextPage } from 'next'
 import { Else, If, Then } from 'react-if'
 
 const Home: NextPage = () => {
-  const { hosts, host, hostError, handleHostChange, handleHostSubmit, removeHost } = useHostsForm()
+  const { sessionIds, isPreparing, createSession, isCreating, removeSession, isRemoving } = useClient()
+  const { host, error, handleChange, handleSubmit } = useSessionForm(createSession)
 
   return (
-    <div className="container mx-auto pt-12 pb-8">
+    <>
       <header>
         <h1>
           <Heading1>
@@ -17,29 +19,33 @@ const Home: NextPage = () => {
           </Heading1>
         </h1>
 
-        <form onSubmit={handleHostSubmit}>
-          <HostsForm
-            value={host}
-            error={hostError}
-            onChange={handleHostChange}
-          />
-        </form>
+        <SessionForm
+          value={host}
+          error={error}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          isSubmitting={isCreating}
+        />
       </header>
       <main className="pt-8 flex flex-col gap-4">
-        <If condition={hosts.length > 0}>
+        <If condition={!isPreparing}>
           <Then>
-            {hosts.map(host => (
-              <Host key={host} value={host} onRemove={() => removeHost(host)}/>
-            ))}
+            <If condition={sessionIds.length > 0}>
+              <Then>
+                {sessionIds.map(id => (
+                  <Session key={id} id={id} onRemove={removeSession} isRemoving={isRemoving} />),
+                )}
+              </Then>
+              <Else>
+                <div className="text-6xl text-gray-300 font-black">
+                  Brak hostów
+                </div>
+              </Else>
+            </If>
           </Then>
-          <Else>
-            <div className="text-6xl text-gray-300 font-black">
-              Brak hostów
-            </div>
-          </Else>
         </If>
       </main>
-    </div>
+    </>
   )
 }
 

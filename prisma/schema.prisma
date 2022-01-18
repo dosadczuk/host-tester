@@ -10,11 +10,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Client {
+  id       String    @id
+  sessions Session[]
+}
+
 model Session {
-  id     String        @id @default(cuid())
-  host   String
-  hostIp String?
-  pings  SessionPing[]
+  id       String        @id @default(cuid())
+  client   Client        @relation(fields: [clientId], references: [id])
+  clientId String
+  host     String
+  hostIp   String?
+  pings    SessionPing[]
 }
 
 model SessionPing {

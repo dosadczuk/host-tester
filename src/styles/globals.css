@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #__next {
+    @apply h-full;
+}
+
 body {
     @apply bg-gray-50;
+}
+
+#__next {
+    @apply container mx-auto pt-12 pb-8;
 }

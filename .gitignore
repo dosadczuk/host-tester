@@ -40,4 +40,4 @@ yarn-error.log*
 .idea
 
 # database
-prisma/*.db
+prisma/*.db*

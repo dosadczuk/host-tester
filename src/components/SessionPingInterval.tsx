@@ -2,10 +2,6 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/outline'
 import { FC, Fragment, useEffect, useState } from 'react'
 
-type Props = {
-  onChange: (interval: number) => void;
-}
-
 const intervals = [
   { value: 1_000, title: '1 s' },
   { value: 5_000, title: '5 s' },
@@ -14,10 +10,14 @@ const intervals = [
   { value: 600_000, title: '10 min' },
 ]
 
-const HostInterval: FC<Props> = ({ onChange }) => {
-  const [interval, setInterval] = useState(intervals[2])
+type SessionPingIntervalProps = {
+  onChange: (interval: number) => void;
+}
 
-  useEffect(() => onChange(interval.value), [onChange, interval])
+const SessionPingInterval: FC<SessionPingIntervalProps> = ({ onChange }) => {
+  const [ interval, setInterval ] = useState(intervals[4])
+
+  useEffect(() => onChange(interval.value), [ onChange, interval ])
 
   return (
     <Listbox value={interval} onChange={setInterval}>
@@ -27,13 +27,14 @@ const HostInterval: FC<Props> = ({ onChange }) => {
         </span>
 
         <div className="relative w-28 border-r border-r-gray-100 pr-3 mr-2">
-          <Listbox.Button className="relative w-full pl-2 pr-10 py-0.5 bg-white text-left border border-gray-300 rounded cursor-default">
+          <Listbox.Button
+            className="relative w-full pl-2 pr-10 py-0.5 bg-white text-left border border-gray-300 rounded cursor-default">
             <span className="block truncate">
               {interval.title}
             </span>
 
             <span className="absolute inset-y-0 right-0 flex items-center pr-2">
-              <SelectorIcon className="w-4 h-4 text-gray-400"/>
+              <SelectorIcon className="w-4 h-4 text-gray-400" />
             </span>
           </Listbox.Button>
 
@@ -43,9 +44,11 @@ const HostInterval: FC<Props> = ({ onChange }) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute w-full z-50 max-h-60 bg-white ring-1 ring-black ring-gray-200 rounded shadow-lg overflow-auto focus:outline-none">
+            <Listbox.Options
+              className="absolute w-full z-50 max-h-60 bg-white ring-1 ring-black ring-gray-200 rounded shadow-lg overflow-auto focus:outline-none">
               {intervals.map((value, idx) => (
-                <Listbox.Option key={idx} value={value} className={({ active }) => `relative pl-8 pr-4 py-1 ${active ? 'text-blue-900 bg-gray-100' : 'text-gray-900'} cursor-default select-none`}>
+                <Listbox.Option key={idx} value={value}
+                  className={({ active }) => `relative pl-8 pr-4 py-1 ${active ? 'text-blue-900 bg-gray-100' : 'text-gray-900'} cursor-default select-none`}>
                   {({ selected }) => (
                     <>
                       <span className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}>
@@ -69,4 +72,4 @@ const HostInterval: FC<Props> = ({ onChange }) => {
   )
 }
 
-export default HostInterval
+export default SessionPingInterval
