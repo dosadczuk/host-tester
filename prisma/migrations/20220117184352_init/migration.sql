@@ -1,8 +1,15 @@
 -- CreateTable
+CREATE TABLE "Client" (
+    "id" TEXT NOT NULL PRIMARY KEY
+);
+
+-- CreateTable
 CREATE TABLE "Session" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
     "host" TEXT NOT NULL,
-    "hostIp" TEXT
+    "hostIp" TEXT,
+    CONSTRAINT "Session_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
