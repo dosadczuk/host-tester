@@ -13,7 +13,7 @@ import { faChevronDown, faChevronUp, faPause, faPlay, faSpinner, faSyncAlt } fro
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Disclosure, Tab } from '@headlessui/react'
 import { FC } from 'react'
-import { Else, If, Then } from 'react-if'
+import { If, Then } from 'react-if'
 
 type SessionProps = {
   id: string,
@@ -90,14 +90,11 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
               onClick={() => onRemove(id)}
               disabled={isRemoving}
             >
-              <If condition={!isRemoving}>
-                <Then>
-                  <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-                </Then>
-                <Else>
-                  <FontAwesomeIcon icon={faSpinner} size="sm" className="fa-spin text-rose-400" />
-                </Else>
-              </If>
+              {
+                !isRemoving
+                  ? <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+                  : <FontAwesomeIcon icon={faSpinner} size="sm" className="fa-spin text-rose-400" />
+              }
             </DangerButton>
 
             <Disclosure.Button as="div">

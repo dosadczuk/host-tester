@@ -1,22 +1,20 @@
 import { Session, SessionPing } from '@/models'
-import { findSessionPings } from '@/services/api'
+import * as api from '@/services/api'
 import { Nullable } from '@/types'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
 const useClientSessionRes = (session: Nullable<Session>) => {
   const [ registry, controller ] = useMap<number, Nullable<SessionPing>>()
-  const [ lastRequestId, setLastRequestId ] = useState(0)
+  const [ lastRequestId, setLastRequestId ] = useState(1)
 
   useEffect(() => { setUpRegistry() }, [ session ])
 
   const setUpRegistry = useCallback(
     async (): Promise<void> => {
-      if (session == null) {
-        return
-      }
+      if (session == null) return
 
-      const pings = await findSessionPings(session.id)
+      const pings = await api.findSessionPings(session.id)
       for (const ping of pings) {
         addResponse(ping.requestId, ping)
       }
@@ -24,7 +22,17 @@ const useClientSessionRes = (session: Nullable<Session>) => {
     [ session ],
   )
 
-  const clearResponses = () => controller.reset()
+  // TODO: Czyścić w bazie
+  const clearResponses = useCallback(
+    async () => {
+      if (session == null) return
+
+      await api.clearSessionPings(session.id)
+
+      controller.reset()
+    },
+    [ session ],
+  )
 
   const addResponse = (requestId: number, response: Nullable<SessionPing>) => {
     controller.set(requestId, response)

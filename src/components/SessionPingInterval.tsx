@@ -15,7 +15,7 @@ type SessionPingIntervalProps = {
 }
 
 const SessionPingInterval: FC<SessionPingIntervalProps> = ({ onChange }) => {
-  const [ interval, setInterval ] = useState(intervals[4])
+  const [ interval, setInterval ] = useState(intervals[2])
 
   useEffect(() => onChange(interval.value), [ onChange, interval ])
 

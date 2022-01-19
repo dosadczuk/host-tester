@@ -1,8 +1,8 @@
 import { Session, SessionPing } from '@/models'
 import * as api from '@/services/api'
 import { Nullable } from '@/types'
+import useInterval from '@use-it/interval'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useInterval } from 'usehooks-ts'
 
 const useClientSessionReq = (nextRequestId: number = 1, session: Nullable<Session>, onResponse: (requestId: number, response: Nullable<SessionPing>) => void) => {
   const [ externalInterval, setExternalInterval ] = useState<Nullable<number>>(null)
@@ -31,7 +31,6 @@ const useClientSessionReq = (nextRequestId: number = 1, session: Nullable<Sessio
       }
 
       const id = nextRequestId
-      console.log('new id: ', id)
 
       try {
         const ping = await api.pingSession(session.id, id)

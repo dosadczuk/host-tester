@@ -34,7 +34,7 @@ export const SecondaryButton: FC<ButtonProps> = ({ onClick, title, disabled, chi
 export const DangerButton: FC<ButtonProps> = ({ onClick, title, disabled, children }) => {
   return (
     <button
-      className={`px-3 py-0.5 text-rose-600 border border-rose-400 rounded transition-colors hover:bg-rose-600 hover:text-white focus:ring focus:ring-offset-2`}
+      className={`px-3 py-0.5 text-rose-600 border border-rose-400 rounded transition-colors hover:bg-rose-600 hover:text-white hover:disabled:bg-white disabled:border-rose-200 focus:ring focus:ring-offset-2`}
       title={title}
       onClick={onClick}
       disabled={disabled}

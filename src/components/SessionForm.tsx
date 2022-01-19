@@ -2,7 +2,6 @@ import { Nullable } from '@/types'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ChangeEventHandler, FC, FormEventHandler } from 'react'
-import { Else, If, Then } from 'react-if'
 
 type SessionFormProps = {
   value: string,
@@ -34,14 +33,11 @@ const SessionForm: FC<SessionFormProps> = ({ value, error, onChange, onSubmit, i
         <button type="submit" disabled={hasError || isSubmitting}
           className="w-32 py-2 px-4 border border-transparent bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-200 text-white font-medium focus:ring-4 rounded transition-colors"
         >
-          <If condition={!isSubmitting}>
-            <Then>
-              Sprawdź
-            </Then>
-            <Else>
-              <FontAwesomeIcon icon={faSpinner} className="fa-spin text-indigo-600" />
-            </Else>
-          </If>
+          {
+            !isSubmitting
+              ? <>Sprawdź</>
+              : <FontAwesomeIcon icon={faSpinner} className="fa-spin text-indigo-600" />
+          }
         </button>
       </div>
     </form>

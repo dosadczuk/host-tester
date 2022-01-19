@@ -19,6 +19,7 @@
     "@tailwindcss/forms": "^0.4.0",
     "@use-it/interval": "^1.0.0",
     "axios": "^0.24.0",
+    "cookies": "^0.8.0",
     "next": "12.0.7",
     "ping": "^0.4.1",
     "react": "17.0.2",
@@ -29,6 +30,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/cookie": "^0.4.1",
+    "@types/cookies": "^0.7.7",
     "@types/node": "17.0.7",
     "@types/ping": "^0.4.1",
     "@types/react": "17.0.38",

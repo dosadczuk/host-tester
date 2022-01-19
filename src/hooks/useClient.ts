@@ -1,35 +1,11 @@
-import useLocalStorage from '@/hooks/useLocalStorage'
 import * as api from '@/services/api'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useBoolean } from 'usehooks-ts'
-import { v4 as uuid } from 'uuid'
 
-const useClient = () => {
-  const token = useLocalStorage('client-token', uuid())
-
-  const [ sessionIds, setSessionIds ] = useState<string[]>([])
-  const { value: isPreparing, setTrue: setPreparing, setFalse: setPrepared } = useBoolean(false)
+const useClient = (savedSessionIds: string[]) => {
+  const [ sessionIds, setSessionIds ] = useState<string[]>(savedSessionIds)
   const { value: isCreating, setTrue: setCreating, setFalse: setCreated } = useBoolean(false)
   const { value: isRemoving, setTrue: setRemoving, setFalse: setRemoved } = useBoolean(false)
-
-  /**
-   * Set up sessions on component mount.
-   */
-  useEffect(() => { setUpSessions() }, [ token ])
-
-  /**
-   * Initialize client sessions.
-   */
-  const setUpSessions = async (): Promise<void> => {
-    try {
-      setPreparing()
-      setSessionIds(await api.findSessionIds(token))
-    } catch {
-      // ignore
-    } finally {
-      setPrepared()
-    }
-  }
 
   /**
    * Create session for client.
@@ -37,7 +13,7 @@ const useClient = () => {
   const createSession = async (host: string): Promise<void> => {
     try {
       setCreating()
-      const session = await api.createSession(token, host)
+      const session = await api.createSession(host)
       setSessionIds(oldSessionIds => [ ...oldSessionIds, session ])
     } catch {
       // ignore
@@ -63,7 +39,6 @@ const useClient = () => {
 
   return {
     sessionIds,
-    isPreparing,
     isCreating, createSession,
     isRemoving, removeSession,
   }

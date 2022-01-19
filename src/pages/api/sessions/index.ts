@@ -7,9 +7,6 @@ const handle = async (
   res: NextApiResponse,
 ) => {
   switch (req.method) {
-    case 'GET':
-      return findSessionIds(req, res)
-
     case 'POST':
       return createSession(req, res)
   }
@@ -17,38 +14,11 @@ const handle = async (
   res.status(405).send('Method not allowed')
 }
 
-const findSessionIds = async (
-  req: NextApiRequest,
-  res: NextApiResponse,
-) => {
-  const token = req.headers['x-token'] as string
-  if (token == null) {
-    return res.status(400).send('Parameter token not provided')
-  }
-
-  try {
-    const sessions = await Prisma.instance.session
-      .findMany({
-        where: { clientId: token },
-        select: { id: true },
-      })
-
-    const sessionIds = await sessions.map(({ id }) => id)
-
-    res.status(200).json(sessionIds)
-  } catch {
-    res.status(400).send('Error occurred')
-  }
-}
-
 const createSession = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
-  const token = req.headers['x-token'] as string
-  if (token == null) {
-    return res.status(400).send('Parameter token not provided')
-  }
+  const token = req.cookies['ClientToken']
 
   const { host } = req.body
   if (host == null) {
