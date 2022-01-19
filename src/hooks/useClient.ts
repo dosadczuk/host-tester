@@ -14,7 +14,7 @@ const useClient = (savedSessionIds: string[]) => {
     try {
       setCreating()
       const session = await api.createSession(host)
-      setSessionIds(oldSessionIds => [ ...oldSessionIds, session ])
+      setSessionIds(oldSessionIds => [ session, ...oldSessionIds ])
     } catch {
       // ignore
     } finally {

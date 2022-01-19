@@ -1,13 +1,17 @@
 import { Heading3 } from '@/components/common/Typography'
+import { getRandomColor } from '@/utils/colors'
 import { FC, useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, ErrorBar, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 type SessionChartWithAverageTimesProps = {
+  sessionId?: string,
   averageTimes: number[];
   standardDeviations: number[];
 }
 
-const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = ({ averageTimes, standardDeviations }) => {
+const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (props) => {
+  const { sessionId, averageTimes, standardDeviations } = props
+
   const data = useMemo(
     () => Array.from({ length: averageTimes.length }, (_, idx) => {
       const avg = averageTimes[idx]
@@ -17,6 +21,8 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = ({ a
     }),
     [ averageTimes, standardDeviations ],
   )
+
+  const [ fillColor, strokeColor ] = useMemo(() => getRandomColor(sessionId), [ sessionId ])
 
   return (
     <>
@@ -39,7 +45,7 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = ({ a
 
           <Tooltip />
 
-          <Bar dataKey="avg" name="Avg" fill="#3b82f6" stroke="#2563eb" strokeWidth={2} opacity={.8}>
+          <Bar dataKey="avg" name="Avg" fill={fillColor} stroke={strokeColor} strokeWidth={2} opacity={.8}>
             <ErrorBar dataKey="stddev" />
           </Bar>
         </BarChart>

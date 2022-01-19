@@ -126,8 +126,11 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
 
                 <Tab.Panels>
                   <Tab.Panel>
-                    <SessionChartWithAverageTimes averageTimes={averageTimes}
-                      standardDeviations={standardDeviations} />
+                    <SessionChartWithAverageTimes
+                      sessionId={session?.id}
+                      averageTimes={averageTimes}
+                      standardDeviations={standardDeviations}
+                    />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
