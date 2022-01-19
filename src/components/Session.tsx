@@ -102,8 +102,8 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
                 <SecondaryButton>
                   {
                     open
-                      ? <FontAwesomeIcon icon={faChevronUp} />
-                      : <FontAwesomeIcon icon={faChevronDown} />
+                      ? <FontAwesomeIcon icon={faChevronUp} className="ml-2" />
+                      : <FontAwesomeIcon icon={faChevronDown} className="ml-2" />
                   }
                 </SecondaryButton>
               )}
