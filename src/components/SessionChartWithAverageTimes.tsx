@@ -31,7 +31,7 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = ({ a
 
           <YAxis unit="ms" stroke="#4b5563" width={42} />
 
-          <XAxis stroke="#4b5563" height={48}>
+          <XAxis dataKey="name" stroke="#4b5563" height={48}>
             <Label position="insideBottom" className="text-gray-600 font-medium">
               numer żądania
             </Label>

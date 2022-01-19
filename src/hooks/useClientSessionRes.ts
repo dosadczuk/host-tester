@@ -6,7 +6,7 @@ import { useMap } from 'usehooks-ts'
 
 const useClientSessionRes = (session: Nullable<Session>) => {
   const [ registry, controller ] = useMap<number, Nullable<SessionPing>>()
-  const [ lastRequestId, setLastRequestId ] = useState(1)
+  const [ lastRequestId, setLastRequestId ] = useState(0)
 
   useEffect(() => { setUpRegistry() }, [ session ])
 
