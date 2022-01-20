@@ -38,7 +38,7 @@ const Home: NextPage<HomePageProps> = ({ savedSessionIds }) => {
           isSubmitting={isCreating}
         />
       </header>
-      <main className="pt-8 flex flex-col gap-4">
+      <main className="py-8 flex flex-col gap-4">
         <If condition={sessionIds.length > 0}>
           <Then>
             {sessionIds.map(id => <Session key={id} id={id} onRemove={removeSession} isRemoving={isRemoving} />)}
