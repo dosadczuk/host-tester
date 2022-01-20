@@ -61,6 +61,7 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({ re
         clientId: getClientToken(req, res),
       },
       select: { id: true },
+      orderBy: { id: 'desc' },
     })
 
   return {
