@@ -99,11 +99,11 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
 
             <Disclosure.Button as="div">
               {({ open }) => (
-                <SecondaryButton>
+                <SecondaryButton className="ml-2">
                   {
                     open
-                      ? <FontAwesomeIcon icon={faChevronUp} className="ml-2" />
-                      : <FontAwesomeIcon icon={faChevronDown} className="ml-2" />
+                      ? <FontAwesomeIcon icon={faChevronUp} />
+                      : <FontAwesomeIcon icon={faChevronDown} />
                   }
                 </SecondaryButton>
               )}
