@@ -26,7 +26,7 @@ const createSession = async (
   }
 
   try {
-    const client = await Prisma.instance.client
+    const client = await Prisma.client
       .upsert({
         where: { id: token },
         create: { id: token },
@@ -38,7 +38,7 @@ const createSession = async (
       return res.status(404).send('Host not reachable')
     }
 
-    const session = await Prisma.instance.session.create({
+    const session = await Prisma.session.create({
       data: {
         clientId: client.id,
         host: serverResponse.host,

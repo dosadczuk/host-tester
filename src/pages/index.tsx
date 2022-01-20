@@ -55,7 +55,7 @@ const Home: NextPage<HomePageProps> = ({ savedSessionIds }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({ req, res }) => {
-  const sessions = await Prisma.instance.session
+  const sessions = await Prisma.session
     .findMany({
       where: {
         clientId: getClientToken(req, res),

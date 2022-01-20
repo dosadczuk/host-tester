@@ -26,7 +26,7 @@ const findSessionPings = async (
   }
 
   try {
-    const sessionPings = await Prisma.instance.sessionPing.findMany({ where: { sessionId } })
+    const sessionPings = await Prisma.sessionPing.findMany({ where: { sessionId } })
 
     res.status(200).json(sessionPings)
   } catch {
@@ -44,7 +44,7 @@ const clearSessionPings = async (
   }
 
   try {
-    const sessionPings = await Prisma.instance.sessionPing.deleteMany({ where: { sessionId } })
+    const sessionPings = await Prisma.sessionPing.deleteMany({ where: { sessionId } })
 
     res.status(200).send('OK')
   } catch {

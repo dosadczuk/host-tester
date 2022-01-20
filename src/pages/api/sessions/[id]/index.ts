@@ -30,7 +30,7 @@ const findSession = async (
   }
 
   try {
-    let session = await Prisma.instance.session.findUnique({ where: { id: sessionId } })
+    let session = await Prisma.session.findUnique({ where: { id: sessionId } })
     if (session == null) {
       return res.status(404).send('Session not found')
     }
@@ -44,7 +44,7 @@ const findSession = async (
       serverResponse.numeric_host != null &&
       serverResponse.numeric_host !== session.hostIp
     ) {
-      session = await Prisma.instance.session
+      session = await Prisma.session
         .update({
           where: { id: session.id },
           data: {
@@ -74,7 +74,7 @@ const pingSession = async (
   }
 
   try {
-    const session = await Prisma.instance.session.findUnique({ where: { id: sessionId } })
+    const session = await Prisma.session.findUnique({ where: { id: sessionId } })
     if (session == null) {
       return res.status(404).send('Session not found')
     }
@@ -84,7 +84,7 @@ const pingSession = async (
       return res.status(404).send('Host not reachable')
     }
 
-    const sessionPing = await Prisma.instance.sessionPing
+    const sessionPing = await Prisma.sessionPing
       .create({
         data: {
           sessionId,
@@ -114,8 +114,8 @@ const removeSession = async (
   }
 
   try {
-    await Prisma.instance.sessionPing.deleteMany({ where: { sessionId } })
-    await Prisma.instance.session.delete({ where: { id: sessionId } })
+    await Prisma.sessionPing.deleteMany({ where: { sessionId } })
+    await Prisma.session.delete({ where: { id: sessionId } })
 
     res.status(200).send('OK')
   } catch (e) {
