@@ -10,16 +10,18 @@ const useClient = (savedSessionIds: string[]) => {
   /**
    * Create session for client.
    */
-  const createSession = async (host: string): Promise<void> => {
+  const createSession = async (host: string): Promise<boolean> => {
     try {
       setCreating()
       const session = await api.createSession(host)
       setSessionIds(oldSessionIds => [ session, ...oldSessionIds ])
     } catch {
-      // ignore
+      return false
     } finally {
       setCreated()
     }
+
+    return true
   }
 
   /**

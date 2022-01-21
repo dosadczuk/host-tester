@@ -4,7 +4,7 @@ import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 
 const Valid952HostnameRegex = /^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z]|[A-Za-z][A-Za-z0-9-]*[A-Za-z0-9])$/
 
-const useSessionForm = ({ onSubmit }: { onSubmit: (session: string) => void }) => {
+const useSessionForm = ({ onSubmit }: { onSubmit: (session: string) => Promise<boolean> }) => {
   const [ host, setHost ] = useState<string>('')
   const [ error, setError ] = useState<Nullable<string>>(null)
 
@@ -13,7 +13,7 @@ const useSessionForm = ({ onSubmit }: { onSubmit: (session: string) => void }) =
     setError(null)
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
 
     if (host.length === 0) {
@@ -28,7 +28,11 @@ const useSessionForm = ({ onSubmit }: { onSubmit: (session: string) => void }) =
       return // formularz zawiera błędy
     }
 
-    onSubmit(host)
+    const isSuccess = await onSubmit(host)
+    if (!isSuccess) {
+      setError('Nie udało się nawiązać połączenia z podanym hostem')
+    }
+
     setHost('')
   }
 
