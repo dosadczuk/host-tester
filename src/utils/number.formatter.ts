@@ -8,6 +8,13 @@ export const formatMilliseconds = (value: number, precision: number): string => 
   })
 }
 
+export const formatDecimal = (value: number, precision: number): string => {
+  return formatNumber(value, {
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+  })
+}
+
 const formatNumber = (value: number, options: Intl.NumberFormatOptions): string => {
   return new Intl.NumberFormat('pl', options).format(value)
 }

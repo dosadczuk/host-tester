@@ -9,15 +9,12 @@
     "postinstall": "prisma generate && prisma migrate dev"
   },
   "dependencies": {
-    "@emotion/react": "^11.7.1",
-    "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
-    "@mui/material": "^5.3.0",
     "@prisma/client": "^3.8.0",
     "@tailwindcss/forms": "^0.4.0",
     "@use-it/interval": "^1.0.0",
@@ -28,7 +25,6 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-if": "^4.1.1",
-    "react-table": "^7.7.0",
     "recharts": "^2.1.8",
     "usehooks-ts": "^2.2.0",
     "uuid": "^8.3.2"

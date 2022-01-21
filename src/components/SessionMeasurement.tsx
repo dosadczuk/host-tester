@@ -1,4 +1,4 @@
-import { formatMilliseconds } from '@/utils/number.formatter'
+import { Milliseconds } from '@/components/common/Formatter'
 import { FC } from 'react'
 
 type SessionMeasurementProps = {
@@ -13,7 +13,7 @@ const SessionMeasurement: FC<SessionMeasurementProps> = ({ name, time, title, cl
     <div className={`px-4 py-0.5 border border-transparent rounded ${className}`} title={title}>
       <span className="text-xs mr-2 uppercase">{name}</span>
       <span className="font-medium">
-        <>{formatMilliseconds(time, 4)}</>
+        <Milliseconds value={time} />
       </span>
     </div>
   )

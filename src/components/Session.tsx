@@ -1,5 +1,4 @@
 import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/common/Button'
-import Link from 'next/link'
 import SessionChartButton from '@/components/SessionChartButton'
 import SessionChartWithAverageTimes from '@/components/SessionChartWithAverageTimes'
 import SessionHeading from '@/components/SessionHeading'
@@ -10,9 +9,18 @@ import useClientSession from '@/hooks/useClientSession'
 import useClientSessionReq from '@/hooks/useClientSessionReq'
 import useClientSessionRes from '@/hooks/useClientSessionRes'
 import { faChartBar, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
-import { faChevronDown, faChevronUp, faPause, faPlay, faSpinner, faSyncAlt, faPrint } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faChevronUp,
+  faPause,
+  faPlay,
+  faPrint,
+  faSpinner,
+  faSyncAlt,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Disclosure, Tab } from '@headlessui/react'
+import Link from 'next/link'
 import { FC } from 'react'
 import { If, Then } from 'react-if'
 
@@ -27,9 +35,9 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
   const { session, isLoading } = useClientSession(id)
   const {
     nextRequestId, addResponse, clearResponses,
-    minimum, minimumTimes,
+    minimum,
     average, averageTimes,
-    maximum, maximumTimes,
+    maximum,
     standardDeviations,
   } = useClientSessionRes(session)
   const {
@@ -37,7 +45,7 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
     startRequesting,
     pauseRequesting,
     resetRequesting,
-  } = useClientSessionReq(nextRequestId, session, addResponse)
+  } = useClientSessionReq(session, addResponse, nextRequestId)
 
   return (
     <section id={id} className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
@@ -71,13 +79,6 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
                 className="bg-rose-100 text-rose-700"
               />
             </div>
-            <Link href={`print/${id}`} passHref>
-              <PrimaryButton
-                title="Drukuj"
-              >
-                <FontAwesomeIcon icon={faPrint} size="sm" color="green"/>
-              </PrimaryButton>
-            </Link>
 
             <PrimaryButton
               title={isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}
@@ -87,11 +88,21 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
             </PrimaryButton>
 
             <PrimaryButton
-              title="Wyczyść wyniki odpytywania"
+              title="Wyczyść wyniki"
               onClick={clearResponses}
             >
               <FontAwesomeIcon icon={faSyncAlt} size="sm" />
             </PrimaryButton>
+
+            <Link href={`print/${id}`} passHref>
+              <a
+                className={`px-3 py-0.5 text-orange-600 border border-orange-400 rounded transition-colors hover:bg-orange-600 hover:text-white hover:disabled:bg-white disabled:border-orange-200 focus:ring focus:ring-offset-2`}
+                title="Drukuj wyniki"
+                target="_blank"
+              >
+                <FontAwesomeIcon icon={faPrint} size="sm" />
+              </a>
+            </Link>
 
             <DangerButton
               title="Usuń hosta z listy"

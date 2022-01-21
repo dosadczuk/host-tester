@@ -16,16 +16,13 @@ body {
 
 @media print {
     @page {
-      size: auto;
-      margin: 0mm;
-      width: 210mm;
-      height: 842px;
-      width: 595px;
-      margin-left: auto;
-      margin-right: auto;
+        size: auto;
+        height: 842px;
+        width: 595px;
+        margin: 0 auto;
     }
-  
+
     body {
-      padding-bottom: 5cm !important;
+        padding-bottom: 5cm !important;
     }
-  }
+}

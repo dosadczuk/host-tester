@@ -4,7 +4,7 @@ import { Nullable } from '@/types'
 import useInterval from '@use-it/interval'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-const useClientSessionReq = (nextRequestId: number = 1, session: Nullable<Session>, onResponse: (requestId: number, response: Nullable<SessionPing>) => void) => {
+const useClientSessionReq = (session: Nullable<Session>, onResponse: (requestId: number, response: Nullable<SessionPing>) => void, nextRequestId: number = 1) => {
   const [ externalInterval, setExternalInterval ] = useState<Nullable<number>>(null)
   const [ internalInterval, setInternalInterval ] = useState<Nullable<number>>(null)
 

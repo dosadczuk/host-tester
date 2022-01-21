@@ -4,7 +4,29 @@ import { Nullable } from '@/types'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
-const useClientSessionRes = (session: Nullable<Session>) => {
+export type SessionResult = {
+  nextRequestId: number,
+  addResponse: (requestId: number, response: Nullable<SessionPing>) => void,
+  clearResponses: () => void,
+
+  responses: [ number, Nullable<SessionPing> ][],
+  responsesCount: number,
+  responsesWithSuccess: [ number, SessionPing ][],
+  responsesWithSuccessCount: number,
+  responsesWithError: [ number, null ][],
+  responsesWithErrorCount: number,
+
+  averageTimes: number[],
+  average: number,
+  minimumTimes: number[],
+  minimum: number,
+  maximumTimes: number[],
+  maximum: number,
+  standardDeviations: number[],
+  packetLosses: number[],
+}
+
+const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
   const [ registry, controller ] = useMap<number, Nullable<SessionPing>>()
   const [ lastRequestId, setLastRequestId ] = useState(0)
 
@@ -22,7 +44,6 @@ const useClientSessionRes = (session: Nullable<Session>) => {
     [ session ],
   )
 
-  // TODO: Czyścić w bazie
   const clearResponses = useCallback(
     async () => {
       if (session == null) return
@@ -55,6 +76,7 @@ const useClientSessionRes = (session: Nullable<Session>) => {
   const maximumTimes = useMemo(() => responsesWithSuccess.map(([ _, { max } ]) => Number(max)), [ responsesWithSuccess ])
 
   const standardDeviations = useMemo(() => responsesWithSuccess.map(([ _, { stddev } ]) => Number(stddev)), [ responsesWithSuccess ])
+  const packetLosses = useMemo(() => responsesWithSuccess.map(([ _, { packetLoss } ]) => Number(packetLoss)), [ responsesWithSuccess ])
 
   const average = useMemo(
     () => {
@@ -91,7 +113,7 @@ const useClientSessionRes = (session: Nullable<Session>) => {
     averageTimes, average,
     minimumTimes, minimum,
     maximumTimes, maximum,
-    standardDeviations,
+    standardDeviations, packetLosses,
   }
 }
 

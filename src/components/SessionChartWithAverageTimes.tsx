@@ -7,13 +7,19 @@ type SessionChartWithAverageTimesProps = {
   sessionId?: string,
   averageTimes: number[];
   standardDeviations: number[];
-  wantAnimation: boolean;
-  isAnimationEnd: Function;
-  width: string;
+
+  withTooltip?: boolean;
+  onAnimationEnd?: () => void;
 }
 
 const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (props) => {
-  const { sessionId, averageTimes, standardDeviations, wantAnimation = true , isAnimationEnd = ()=>{}, width = '100%'} = props
+  const {
+    sessionId,
+    averageTimes,
+    standardDeviations,
+    withTooltip = true,
+    onAnimationEnd = () => void 0,
+  } = props
 
   const data = useMemo(
     () => Array.from({ length: averageTimes.length }, (_, idx) => {
@@ -29,12 +35,12 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
 
   return (
     <>
-      <h3 className="pl-10">
+      <h3 className="mb-2">
         <Heading3>
           Średni czas odpowiedzi
         </Heading3>
       </h3>
-      <ResponsiveContainer width={width} height={400}>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="2 2" />
 
@@ -46,9 +52,18 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
             </Label>
           </XAxis>
 
-          <Tooltip />
+          {withTooltip && <Tooltip />}
 
-          <Bar dataKey="avg" name="Avg" fill={fillColor} stroke={strokeColor} strokeWidth={2} opacity={.8} isAnimationActive={wantAnimation} onAnimationEnd={()=> isAnimationEnd()}>
+          <Bar
+            dataKey="avg"
+            name="Avg"
+            fill={fillColor}
+            stroke={strokeColor}
+            strokeWidth={2}
+            opacity={.8}
+
+            onAnimationEnd={onAnimationEnd}
+          >
             <ErrorBar dataKey="stddev" />
           </Bar>
         </BarChart>

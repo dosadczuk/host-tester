@@ -19,6 +19,7 @@ export const PrimaryButton: FC<ButtonProps> = ({ onClick, title, disabled, class
     </button>
   )
 }
+
 export const SecondaryButton: FC<ButtonProps> = ({ onClick, title, disabled, className, children }) => {
   return (
     <button
