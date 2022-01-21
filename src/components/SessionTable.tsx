@@ -26,7 +26,6 @@ const SessionTable: FC<SessionTableProps> = ({ result }) => {
           avg: averageTimes[idx],
           max: maximumTimes[idx],
           sd: standardDeviations[idx],
-          pl: packetLosses[idx],
         }
       })
     },
@@ -44,7 +43,6 @@ const SessionTable: FC<SessionTableProps> = ({ result }) => {
               <TableHeadCol>Avg [ms]</TableHeadCol>
               <TableHeadCol>Max [ms]</TableHeadCol>
               <TableHeadCol>Sd [ms]</TableHeadCol>
-              <TableHeadCol>Packet loss</TableHeadCol>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -62,9 +60,6 @@ const SessionTable: FC<SessionTableProps> = ({ result }) => {
                 </TableBodyCol>
                 <TableBodyCol>
                   <Decimal value={row.sd} />
-                </TableBodyCol>
-                <TableBodyCol>
-                  {row.pl}
                 </TableBodyCol>
               </tr>
             ))}
