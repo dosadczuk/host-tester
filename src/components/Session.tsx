@@ -1,4 +1,5 @@
 import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/common/Button'
+import Link from 'next/link'
 import SessionChartButton from '@/components/SessionChartButton'
 import SessionChartWithAverageTimes from '@/components/SessionChartWithAverageTimes'
 import SessionHeading from '@/components/SessionHeading'
@@ -9,7 +10,7 @@ import useClientSession from '@/hooks/useClientSession'
 import useClientSessionReq from '@/hooks/useClientSessionReq'
 import useClientSessionRes from '@/hooks/useClientSessionRes'
 import { faChartBar, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
-import { faChevronDown, faChevronUp, faPause, faPlay, faSpinner, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faPause, faPlay, faSpinner, faSyncAlt, faPrint } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Disclosure, Tab } from '@headlessui/react'
 import { FC } from 'react'
@@ -70,6 +71,13 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
                 className="bg-rose-100 text-rose-700"
               />
             </div>
+            <Link href={`print/${id}`} passHref>
+              <PrimaryButton
+                title="Drukuj"
+              >
+                <FontAwesomeIcon icon={faPrint} size="sm" color="green"/>
+              </PrimaryButton>
+            </Link>
 
             <PrimaryButton
               title={isRequesting ? 'Zatrzymaj odpytywanie' : 'Rozpocznij odpytywanie'}

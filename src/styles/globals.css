@@ -13,3 +13,19 @@ body {
 #__next {
     @apply container mx-auto pt-12 pb-8;
 }
+
+@media print {
+    @page {
+      size: auto;
+      margin: 0mm;
+      width: 210mm;
+      height: 842px;
+      width: 595px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    body {
+      padding-bottom: 5cm !important;
+    }
+  }
