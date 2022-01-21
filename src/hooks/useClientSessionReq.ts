@@ -4,7 +4,8 @@ import { Nullable } from '@/types'
 import useInterval from '@use-it/interval'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-const useClientSessionReq = (session: Nullable<Session>, onResponse: (requestId: number, response: Nullable<SessionPing>) => void, nextRequestId: number = 1) => {
+const useClientSessionReq = (initRequestId: number, session: Nullable<Session>, onResponse: (requestId: number, response: Nullable<SessionPing>) => void) => {
+  const [ requestId, setRequestId ] = useState(initRequestId)
   const [ externalInterval, setExternalInterval ] = useState<Nullable<number>>(null)
   const [ internalInterval, setInternalInterval ] = useState<Nullable<number>>(null)
 
@@ -13,6 +14,13 @@ const useClientSessionReq = (session: Nullable<Session>, onResponse: (requestId:
   const startRequesting = () => setInternalInterval(externalInterval)
   const pauseRequesting = () => setInternalInterval(null)
   const resetRequesting = (interval: number) => setExternalInterval(interval)
+
+  useEffect(
+    () => {
+      setRequestId(initRequestId)
+    },
+    [ initRequestId ],
+  )
 
   /**
    * Reset requesting interval if is external change.
@@ -30,7 +38,8 @@ const useClientSessionReq = (session: Nullable<Session>, onResponse: (requestId:
         return // nothing to ping
       }
 
-      const id = nextRequestId
+      const id = requestId
+      setRequestId(requestId + 1)
 
       try {
         const ping = await api.pingSession(session.id, id)
@@ -40,7 +49,7 @@ const useClientSessionReq = (session: Nullable<Session>, onResponse: (requestId:
         onResponse(id, null)
       }
     },
-    [ session, nextRequestId, onResponse ],
+    [ session, requestId, onResponse ],
   )
 
   /**

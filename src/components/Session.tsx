@@ -34,7 +34,7 @@ type SessionProps = {
 const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
   const { session, isLoading } = useClientSession(id)
   const {
-    nextRequestId, addResponse, clearResponses,
+    lastRequestId, addResponse, clearResponses,
     minimum,
     average, averageTimes,
     maximum,
@@ -45,7 +45,7 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
     startRequesting,
     pauseRequesting,
     resetRequesting,
-  } = useClientSessionReq(session, addResponse, nextRequestId)
+  } = useClientSessionReq(lastRequestId + 1, session, addResponse)
 
   return (
     <section id={id} className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">

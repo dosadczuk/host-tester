@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
 export type SessionResult = {
-  nextRequestId: number,
+  lastRequestId: number,
   addResponse: (requestId: number, response: Nullable<SessionPing>) => void,
   clearResponses: () => void,
 
@@ -40,6 +40,11 @@ const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
       for (const ping of pings) {
         addResponse(ping.requestId, ping)
       }
+
+      const lastPing = pings[pings.length - 1]
+      if (lastPing != null) {
+        setLastRequestId(lastPing.requestId)
+      }
     },
     [ session ],
   )
@@ -57,10 +62,7 @@ const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
 
   const addResponse = (requestId: number, response: Nullable<SessionPing>) => {
     controller.set(requestId, response)
-    setLastRequestId(requestId)
   }
-
-  const nextRequestId = useMemo(() => lastRequestId + 1, [ lastRequestId ])
 
   const responses = useMemo(() => Array.from(registry.entries()), [ registry ])
   const responsesCount = useMemo(() => responses.length, [ responses ])
@@ -103,7 +105,7 @@ const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
   )
 
   return {
-    nextRequestId,
+    lastRequestId,
     addResponse, clearResponses,
 
     responses, responsesCount,
