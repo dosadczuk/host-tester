@@ -35,7 +35,7 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
 
   return (
     <>
-      <h3 className="mb-2">
+      <h3 className="mb-2 pl-10">
         <Heading3>
           Średni czas odpowiedzi
         </Heading3>
