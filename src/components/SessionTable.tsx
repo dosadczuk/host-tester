@@ -35,7 +35,7 @@ const SessionTable: FC<SessionTableProps> = ({ result }) => {
 
   return (
     <div className="py-2 align-middle inline-block min-w-full">
-      <div className="overflow-hidden border border-gray-200">
+      <div className="overflow-hidden border border-gray-200 rounded">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

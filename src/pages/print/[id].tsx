@@ -18,7 +18,6 @@ const Print: NextPage<PrintProps> = ({ session }) => {
   const sessionResponse = useClientSessionRes(session)
 
   const handlePrint = () => {
-    window.onafterprint = window.close
     window.print()
   }
 
