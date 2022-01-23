@@ -1,35 +1,28 @@
 import { Decimal } from '@/components/common/Formatter'
-import { SessionResult } from '@/hooks/useClientSessionRes'
+import { Measurement, PingResponseSuccess } from '@/types'
 import React, { FC, useMemo } from 'react'
 
 type SessionTableProps = {
-  result: SessionResult;
+  responsesWithSuccess: [ number, PingResponseSuccess ][],
+  responsesWithSuccessCount: number,
+  minimumTimes: Measurement[],
+  averageTimes: Measurement[],
+  maximumTimes: Measurement[],
+  standardDeviations: Measurement[]
 }
 
-const SessionTable: FC<SessionTableProps> = ({ result }) => {
+const SessionTable: FC<SessionTableProps> = (props) => {
   const rows = useMemo(
-    () => {
-      const {
-        responsesWithSuccess,
-        responsesWithSuccessCount,
-        minimumTimes,
-        averageTimes,
-        maximumTimes,
-        standardDeviations,
-        packetLosses,
-      } = result
-
-      return Array.from({ length: responsesWithSuccessCount }, (_, idx) => {
-        return {
-          id: responsesWithSuccess[idx][0],
-          min: minimumTimes[idx],
-          avg: averageTimes[idx],
-          max: maximumTimes[idx],
-          sd: standardDeviations[idx],
-        }
-      })
-    },
-    [ result ],
+    () => Array.from({ length: props.responsesWithSuccessCount }, (_, idx) => {
+      return {
+        id: props.responsesWithSuccess[idx][0],
+        min: props.minimumTimes[idx],
+        avg: props.averageTimes[idx],
+        max: props.maximumTimes[idx],
+        sd: props.standardDeviations[idx],
+      }
+    }),
+    [ props ],
   )
 
   return (

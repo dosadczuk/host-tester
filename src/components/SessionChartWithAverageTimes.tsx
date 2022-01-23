@@ -5,16 +5,18 @@ import { Bar, BarChart, CartesianGrid, ErrorBar, Label, ResponsiveContainer, Too
 
 type SessionChartWithAverageTimesProps = {
   sessionId?: string,
-  averageTimes: number[];
-  standardDeviations: number[];
+  timestamps: number[],
+  averageTimes: number[],
+  standardDeviations: number[],
 
-  withTooltip?: boolean;
-  onAnimationEnd?: () => void;
+  withTooltip?: boolean,
+  onAnimationEnd?: () => void,
 }
 
 const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (props) => {
   const {
     sessionId,
+    timestamps,
     averageTimes,
     standardDeviations,
     withTooltip = true,
@@ -23,12 +25,13 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
 
   const data = useMemo(
     () => Array.from({ length: averageTimes.length }, (_, idx) => {
+      const timestamp = timestamps[idx]
       const avg = averageTimes[idx]
       const stddev = standardDeviations[idx]
 
-      return { name: idx + 1, avg, stddev }
+      return { name: timestamp, avg, stddev }
     }),
-    [ averageTimes, standardDeviations ],
+    [ timestamps, averageTimes, standardDeviations ],
   )
 
   const [ fillColor, strokeColor ] = useMemo(() => getRandomColor(sessionId), [ sessionId ])
@@ -44,14 +47,6 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="2 2" />
 
-          <YAxis unit="ms" stroke="#4b5563" width={42} />
-
-          <XAxis dataKey="name" stroke="#4b5563" height={48}>
-            <Label position="insideBottom" className="text-gray-600 font-medium">
-              numer żądania
-            </Label>
-          </XAxis>
-
           {withTooltip && <Tooltip />}
 
           <Bar
@@ -61,11 +56,18 @@ const SessionChartWithAverageTimes: FC<SessionChartWithAverageTimesProps> = (pro
             stroke={strokeColor}
             strokeWidth={2}
             opacity={.8}
-
             onAnimationEnd={onAnimationEnd}
           >
             <ErrorBar dataKey="stddev" />
           </Bar>
+
+          <YAxis unit="ms" stroke="#4b5563" width={42} />
+
+          <XAxis dataKey="name" stroke="#4b5563" height={60} angle={-75} fontSize={12} fontWeight={500}>
+            <Label position="insideBottom" className="text-gray-600 font-medium">
+              timestamp
+            </Label>
+          </XAxis>
         </BarChart>
       </ResponsiveContainer>
     </>

@@ -12,5 +12,6 @@ export type SessionPing = {
   avg?: string,
   max?: string,
   stddev?: string,
-  packetLoss?: string
+  packetLoss?: string,
+  timestamp: string
 }

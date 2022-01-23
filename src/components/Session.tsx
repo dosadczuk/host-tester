@@ -21,17 +21,20 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Disclosure, Tab } from '@headlessui/react'
 import Link from 'next/link'
-import { FC } from 'react'
+import { ChangeEventHandler, FC } from 'react'
 import { If, Then } from 'react-if'
 
 type SessionProps = {
   id: string,
 
   onRemove: (sessionId: string) => void,
+  onSelect: (sessionId: string) => void,
+  onUnselect: (sessionId: string) => void,
+
   isRemoving: boolean
 }
 
-const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
+const Session: FC<SessionProps> = ({ id, onRemove, onSelect, onUnselect, isRemoving }) => {
   const { session, isLoading } = useClientSession(id)
   const {
     lastRequestId, addResponse, clearResponses,
@@ -39,6 +42,7 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
     average, averageTimes,
     maximum,
     standardDeviations,
+    timestamps,
   } = useClientSessionRes(session)
   const {
     isRequesting,
@@ -47,13 +51,22 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
     resetRequesting,
   } = useClientSessionReq(lastRequestId + 1, session, addResponse)
 
+  const handleSelection: ChangeEventHandler<HTMLInputElement> = ({ target: { checked } }) => {
+    if (checked) { onSelect(id) } else { onUnselect(id) }
+  }
+
   return (
     <section id={id} className="py-2 px-4 bg-white text-gray-800 border border-gray-200 rounded-xl">
       <Disclosure defaultOpen>
         <header className="flex justify-between items-center py-2">
           <h2 className="flex items-center gap-3 text-left">
-            <SessionStatus isLoading={isLoading} />
+            <label className="inline-flex items-center mx-3" title="Czy umieścić hosta w zestawieniu">
+              <input type="checkbox" onChange={handleSelection}
+                className="form-checkbox h-5 w-5 border border-gray-200 text-emerald-600 rounded" />
+            </label>
+
             <SessionHeading session={session} />
+            <SessionStatus isLoading={isLoading} />
           </h2>
 
           <div className="flex items-center gap-1">
@@ -147,6 +160,7 @@ const Session: FC<SessionProps> = ({ id, onRemove, isRemoving }) => {
                   <Tab.Panel>
                     <SessionChartWithAverageTimes
                       sessionId={session?.id}
+                      timestamps={timestamps}
                       averageTimes={averageTimes}
                       standardDeviations={standardDeviations}
                     />

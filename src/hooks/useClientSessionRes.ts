@@ -4,29 +4,7 @@ import { Nullable } from '@/types'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMap } from 'usehooks-ts'
 
-export type SessionResult = {
-  lastRequestId: number,
-  addResponse: (requestId: number, response: Nullable<SessionPing>) => void,
-  clearResponses: () => void,
-
-  responses: [ number, Nullable<SessionPing> ][],
-  responsesCount: number,
-  responsesWithSuccess: [ number, SessionPing ][],
-  responsesWithSuccessCount: number,
-  responsesWithError: [ number, null ][],
-  responsesWithErrorCount: number,
-
-  averageTimes: number[],
-  average: number,
-  minimumTimes: number[],
-  minimum: number,
-  maximumTimes: number[],
-  maximum: number,
-  standardDeviations: number[],
-  packetLosses: number[],
-}
-
-const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
+const useClientSessionRes = (session: Nullable<Session>) => {
   const [ registry, controller ] = useMap<number, Nullable<SessionPing>>()
   const [ lastRequestId, setLastRequestId ] = useState(0)
 
@@ -78,7 +56,8 @@ const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
   const maximumTimes = useMemo(() => responsesWithSuccess.map(([ _, { max } ]) => Number(max)), [ responsesWithSuccess ])
 
   const standardDeviations = useMemo(() => responsesWithSuccess.map(([ _, { stddev } ]) => Number(stddev)), [ responsesWithSuccess ])
-  const packetLosses = useMemo(() => responsesWithSuccess.map(([ _, { packetLoss } ]) => Number(packetLoss)), [ responsesWithSuccess ])
+
+  const timestamps = useMemo(() => responsesWithSuccess.map(([ _, { timestamp } ]) => new Date(timestamp).getTime()), [ responsesWithSuccess ])
 
   const average = useMemo(
     () => {
@@ -115,7 +94,8 @@ const useClientSessionRes = (session: Nullable<Session>): SessionResult => {
     averageTimes, average,
     minimumTimes, minimum,
     maximumTimes, maximum,
-    standardDeviations, packetLosses,
+    standardDeviations,
+    timestamps,
   }
 }
 

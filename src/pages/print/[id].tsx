@@ -14,12 +14,16 @@ type PrintProps = {
   session: Session
 }
 
-const Print: NextPage<PrintProps> = ({ session }) => {
-  const sessionResponse = useClientSessionRes(session)
-
-  const handlePrint = () => {
-    window.print()
-  }
+const PrintSession: NextPage<PrintProps> = ({ session }) => {
+  const {
+    responsesWithSuccess,
+    responsesWithSuccessCount,
+    minimumTimes, minimum,
+    averageTimes, average,
+    maximumTimes, maximum,
+    standardDeviations,
+    timestamps,
+  } = useClientSessionRes(session)
 
   return (
     <>
@@ -34,19 +38,19 @@ const Print: NextPage<PrintProps> = ({ session }) => {
           <div className="flex items-center gap-1">
             <SessionMeasurement
               name="min"
-              time={sessionResponse.minimum}
+              time={minimum}
               title="Minimalny czas odpowiedzi"
               className="bg-emerald-100 text-emerald-700"
             />
             <SessionMeasurement
               name="avg"
-              time={sessionResponse.average}
+              time={average}
               title="Średni czas odpowiedzi"
               className="bg-blue-100 text-blue-700"
             />
             <SessionMeasurement
               name="max"
-              time={sessionResponse.maximum}
+              time={maximum}
               title="Maksymalny czas odpowiedzi"
               className="bg-rose-100 text-rose-700"
             />
@@ -55,11 +59,12 @@ const Print: NextPage<PrintProps> = ({ session }) => {
 
         <article className="pb-2 pt-8">
           <SessionChartWithAverageTimes
-            sessionId={session?.id}
-            averageTimes={sessionResponse.averageTimes}
-            standardDeviations={sessionResponse.standardDeviations}
+            sessionId={session.id}
+            timestamps={timestamps}
+            averageTimes={averageTimes}
+            standardDeviations={standardDeviations}
             withTooltip={false}
-            onAnimationEnd={handlePrint}
+            onAnimationEnd={() => { window.print() }}
           />
 
           <div className="flex flex-col mt-10">
@@ -70,7 +75,14 @@ const Print: NextPage<PrintProps> = ({ session }) => {
                 </Heading3>
               </h2>
             </div>
-            <SessionTable result={sessionResponse} />
+            <SessionTable
+              responsesWithSuccess={responsesWithSuccess}
+              responsesWithSuccessCount={responsesWithSuccessCount}
+              minimumTimes={minimumTimes}
+              averageTimes={averageTimes}
+              maximumTimes={maximumTimes}
+              standardDeviations={standardDeviations}
+            />
           </div>
         </article>
       </section>
@@ -97,4 +109,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default Print
+export default PrintSession

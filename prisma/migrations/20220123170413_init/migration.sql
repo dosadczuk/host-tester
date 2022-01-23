@@ -23,5 +23,6 @@ CREATE TABLE "SessionPing" (
     "avg" TEXT,
     "stddev" TEXT,
     "packetLoss" TEXT,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "SessionPing_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "Session" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

@@ -25,8 +25,8 @@ model Session {
 }
 
 model SessionPing {
-  id         String  @id @default(cuid())
-  session    Session @relation(fields: [sessionId], references: [id])
+  id         String   @id @default(cuid())
+  session    Session  @relation(fields: [sessionId], references: [id])
   sessionId  String
   requestId  Int
   alive      Boolean
@@ -35,4 +35,5 @@ model SessionPing {
   avg        String?
   stddev     String?
   packetLoss String?
+  timestamp  DateTime @default(now())
 }
